@@ -41,7 +41,6 @@ public class EditorController : MonoBehaviour {
 			}
 
 			int current = audioSource.timeSamples / resolution;
-			Debug.Log (resolution);
 			current *= audioSource.clip.channels;
 
 			Vector3 c = new Vector3 (current * 0.04f, 0, 0);
@@ -103,7 +102,6 @@ public class EditorController : MonoBehaviour {
 		var currentPosition = Camera.main.ScreenToWorldPoint (Input.mousePosition);
 		var offset = startPosition.x - currentPosition.x;
 		instantiateWaveController.transform.position = new Vector3 (instantiateWaveController.transform.position.x - offset, this.transform.position.y, 0f);
-		Debug.Log (instantiateWaveController.transform.position);
 		startPosition = currentPosition;
 	}
 }

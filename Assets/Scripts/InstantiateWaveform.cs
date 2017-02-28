@@ -14,7 +14,6 @@ public class InstantiateWaveform : MonoBehaviour {
 
 		for (int i = 0; i < waveFormGraph.Length; i++) {
 			GameObject insWave = (GameObject)Instantiate (wavePrefab);
-			Debug.Log (this.transform.position);
 			insWave.transform.position = this.transform.position;
 			insWave.transform.position += Vector3.right * i * 0.1f;
 			insWave.transform.localScale = new Vector3 (1, waveFormData[i] * 300, 1);
