@@ -9,24 +9,18 @@ using UnityEditor;
 public class EditorController : MonoBehaviour {
 
 	public GameObject instantiateWaveController;
-	//public Scrollbar scrollBar;
-	//public ScrollRect scrollView;
 	public float[] waveForm;
 
 	Vector3 startPosition;
+	float mouseX;
 	AudioSource audioSource;
-	int resolution = 60;
+	int resolution = 10;
 
 	float[] samples;
 
 	// Use this for initialization
 	void Start () {
 		audioSource = GetComponent<AudioSource> ();
-		//scrollView.SetActive (false);
-		//scrollView.enabled = false;
-		//scrollView.gameObject.SetActive (false);
-		//Debug.Log (scrollBar);
-
 	}
 	
 	// Update is called once per frame
@@ -84,24 +78,42 @@ public class EditorController : MonoBehaviour {
 			waveForm[i] = 0;
 			for (int ii = 0; ii < resolution; ii++) {
 				waveForm[i] += samples[(i * resolution) + ii];
-
-				//Mathf.abs <-- another option
+				//waveForm [i] += Mathf.Abs (samples [(i * resolution) + ii]); //<-- another option
 			}
 			waveForm[i] /= resolution;
 		}
 		audioSource.Play ();
 		instantiateWaveController.SetActive (true);
-		//scrollView.SetActive (true);
 	}
 
 	void OnMouseDown() {
+		mouseX = Input.mousePosition.x;
 		startPosition = Camera.main.ScreenToWorldPoint (Input.mousePosition);
 	}
 
 	void OnMouseDrag() {
 		var currentPosition = Camera.main.ScreenToWorldPoint (Input.mousePosition);
 		var offset = startPosition.x - currentPosition.x;
+		var pixOffset = mouseX - Input.mousePosition.x;
+		//Debug.Log (offset);
 		instantiateWaveController.transform.position = new Vector3 (instantiateWaveController.transform.position.x - offset, this.transform.position.y, 0f);
 		startPosition = currentPosition;
+
+		if (pixOffset > 10) {
+			Debug.Log ("left");
+			//how many?
+			int number = (int)pixOffset / 10 + 1;
+			mouseX = Input.mousePosition.x;
+
+			instantiateWaveController.GetComponent<InstantiateWaveform> ().redraw (number);
+
+		} else if (pixOffset < -10) {
+			Debug.Log ("right");
+			int number = (int) pixOffset / 10;
+			mouseX = Input.mousePosition.x;
+			instantiateWaveController.GetComponent<InstantiateWaveform> ().redraw (number);
+		} else {
+			Debug.Log ("no");
+		}
 	}
 }
