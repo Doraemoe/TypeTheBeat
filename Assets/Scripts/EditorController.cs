@@ -17,6 +17,7 @@ public class EditorController : MonoBehaviour {
 	int resolution = 10;
 	float[] samples;
 	float waveControllerX;
+	float max = 0;
 
 	// Use this for initialization
 	void Start () {
@@ -27,6 +28,7 @@ public class EditorController : MonoBehaviour {
 	void Update () {
 
 		if (audioSource.isPlaying == true) {
+			/*
 			for (int i = 0; i < waveForm.Length; i++) {
 				Vector3 sv = new Vector3 (i * 0.04f, waveForm [i] * 50, 0);
 				Vector3 ev = new Vector3 (i * 0.04f, - waveForm [i] * 50, 0);
@@ -40,7 +42,7 @@ public class EditorController : MonoBehaviour {
 			Vector3 c = new Vector3 (current * 0.04f, 0, 0);
 
 			Debug.DrawLine (c, c + Vector3.up * 50, Color.white);
-
+*/
 			this.PlayMusic ();
 		}
 	}
@@ -83,10 +85,21 @@ public class EditorController : MonoBehaviour {
 				waveForm [i] += Mathf.Abs (samples [(i * resolution) + ii]); //<-- another option
 			}
 			waveForm[i] /= resolution;
+			if (waveForm [i] > max) {
+				max = waveForm [i];
+			}
 		}
+
+		this.normalizeWaveForm ();
 			
 		instantiateWaveController.SetActive (true);
 		waveControllerX = Camera.main.WorldToScreenPoint(instantiateWaveController.transform.position).x;
+	}
+
+	void normalizeWaveForm() {
+		for (int i = 0; i < waveForm.Length; i++) {
+			waveForm [i] /= max;
+		}
 	}
 
 	void OnMouseDown() {
@@ -104,7 +117,6 @@ public class EditorController : MonoBehaviour {
 			startPosition = currentPosition;
 
 			if (pixOffset > 10) {
-				Debug.Log ("left");
 				//how many?
 				int number = (int)pixOffset / 10 + 1;
 				mouseX = Input.mousePosition.x;
@@ -112,7 +124,6 @@ public class EditorController : MonoBehaviour {
 				instantiateWaveController.GetComponent<InstantiateWaveform> ().redraw (number);
 
 			} else if (pixOffset < -10) {
-				Debug.Log ("right");
 				int number = (int)pixOffset / 10;
 				mouseX = Input.mousePosition.x;
 				instantiateWaveController.GetComponent<InstantiateWaveform> ().redraw (number);
@@ -127,8 +138,6 @@ public class EditorController : MonoBehaviour {
 		current *= audioSource.clip.channels;
 		instantiateWaveController.transform.position = Vector3.left * current * 0.1f + Vector3.up * 1.2f;
 		var currentPositionX = Camera.main.WorldToScreenPoint(instantiateWaveController.transform.position).x;
-		Debug.Log ("current" + currentPositionX);
-		Debug.Log ("old" + waveControllerX);
 		var pixOffset =  waveControllerX - currentPositionX;
 		if (pixOffset > 10) {
 			int number = (int)pixOffset / 10;

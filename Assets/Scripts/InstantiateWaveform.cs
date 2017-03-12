@@ -33,7 +33,7 @@ public class InstantiateWaveform : MonoBehaviour {
 		GameObject insWave = (GameObject)Instantiate (wavePrefab);
 		insWave.transform.position = this.transform.position;
 		insWave.transform.position += Vector3.right * i * 0.1f;
-		insWave.transform.localScale = new Vector3 (1, editorCtrl.waveForm[i] * 300, 1);
+		insWave.transform.localScale = new Vector3 (1, editorCtrl.waveForm[i] * 30, 1);
 		insWave.transform.parent = this.transform;
 		insWave.name = "wave" + i;
 		//var currentX = this.transform.position.x;
