@@ -21,7 +21,7 @@ public class InstantiateWaveform : MonoBehaviour {
 			generateWaveBar (i);
 		}
 		rightMost = i;
-		Debug.Log ("rightmost" + i);
+		//Debug.Log ("rightmost" + i);
 	}
 	
 	// Update is called once per frame
@@ -42,7 +42,7 @@ public class InstantiateWaveform : MonoBehaviour {
 	}
 
 	public void redraw(int number) {
-		Debug.Log (number);
+		//Debug.Log (number);
 		if (number > 0) { //left
 			//generate right
 			int i;

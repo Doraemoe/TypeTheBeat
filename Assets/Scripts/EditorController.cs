@@ -15,8 +15,8 @@ public class EditorController : MonoBehaviour {
 	float mouseX;
 	AudioSource audioSource;
 	int resolution = 10;
-
 	float[] samples;
+	float waveControllerX;
 
 	// Use this for initialization
 	void Start () {
@@ -28,8 +28,8 @@ public class EditorController : MonoBehaviour {
 
 		if (audioSource.isPlaying == true) {
 			for (int i = 0; i < waveForm.Length; i++) {
-				Vector3 sv = new Vector3 (i * 0.04f, waveForm [i] * 10, 0);
-				Vector3 ev = new Vector3 (i * 0.04f, - waveForm [i] * 10, 0);
+				Vector3 sv = new Vector3 (i * 0.04f, waveForm [i] * 50, 0);
+				Vector3 ev = new Vector3 (i * 0.04f, - waveForm [i] * 50, 0);
 
 				Debug.DrawLine (sv, ev, Color.yellow);
 			}
@@ -39,7 +39,9 @@ public class EditorController : MonoBehaviour {
 
 			Vector3 c = new Vector3 (current * 0.04f, 0, 0);
 
-			Debug.DrawLine (c, c + Vector3.up * 10, Color.white);
+			Debug.DrawLine (c, c + Vector3.up * 50, Color.white);
+
+			this.PlayMusic ();
 		}
 	}
 
@@ -47,7 +49,7 @@ public class EditorController : MonoBehaviour {
 
 		var path = EditorUtility.OpenFilePanel(
 			"Open Music",
-			"",
+			System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop),
 			"ogg");
 		
 		if (path.Length != 0) {
@@ -77,13 +79,14 @@ public class EditorController : MonoBehaviour {
 		for (int i = 0; i < waveForm.Length; i++) {
 			waveForm[i] = 0;
 			for (int ii = 0; ii < resolution; ii++) {
-				waveForm[i] += samples[(i * resolution) + ii];
-				//waveForm [i] += Mathf.Abs (samples [(i * resolution) + ii]); //<-- another option
+				//waveForm[i] += samples[(i * resolution) + ii];
+				waveForm [i] += Mathf.Abs (samples [(i * resolution) + ii]); //<-- another option
 			}
 			waveForm[i] /= resolution;
 		}
-		audioSource.Play ();
+			
 		instantiateWaveController.SetActive (true);
+		waveControllerX = Camera.main.WorldToScreenPoint(instantiateWaveController.transform.position).x;
 	}
 
 	void OnMouseDown() {
@@ -92,28 +95,53 @@ public class EditorController : MonoBehaviour {
 	}
 
 	void OnMouseDrag() {
-		var currentPosition = Camera.main.ScreenToWorldPoint (Input.mousePosition);
-		var offset = startPosition.x - currentPosition.x;
-		var pixOffset = mouseX - Input.mousePosition.x;
-		//Debug.Log (offset);
-		instantiateWaveController.transform.position = new Vector3 (instantiateWaveController.transform.position.x - offset, this.transform.position.y, 0f);
-		startPosition = currentPosition;
+		if (instantiateWaveController.activeSelf) {
+			var currentPosition = Camera.main.ScreenToWorldPoint (Input.mousePosition);
+			var offset = startPosition.x - currentPosition.x;
+			var pixOffset = mouseX - Input.mousePosition.x;
+			//Debug.Log (offset);
+			instantiateWaveController.transform.position = new Vector3 (instantiateWaveController.transform.position.x - offset, this.transform.position.y, 0f);
+			startPosition = currentPosition;
 
+			if (pixOffset > 10) {
+				Debug.Log ("left");
+				//how many?
+				int number = (int)pixOffset / 10 + 1;
+				mouseX = Input.mousePosition.x;
+
+				instantiateWaveController.GetComponent<InstantiateWaveform> ().redraw (number);
+
+			} else if (pixOffset < -10) {
+				Debug.Log ("right");
+				int number = (int)pixOffset / 10;
+				mouseX = Input.mousePosition.x;
+				instantiateWaveController.GetComponent<InstantiateWaveform> ().redraw (number);
+			} else {
+				//Debug.Log ("no");
+			}
+		}
+	}
+
+	void PlayMusic() {
+		int current = audioSource.timeSamples / resolution;
+		current *= audioSource.clip.channels;
+		instantiateWaveController.transform.position = Vector3.left * current * 0.1f + Vector3.up * 1.2f;
+		var currentPositionX = Camera.main.WorldToScreenPoint(instantiateWaveController.transform.position).x;
+		Debug.Log ("current" + currentPositionX);
+		Debug.Log ("old" + waveControllerX);
+		var pixOffset =  waveControllerX - currentPositionX;
 		if (pixOffset > 10) {
-			Debug.Log ("left");
-			//how many?
-			int number = (int)pixOffset / 10 + 1;
-			mouseX = Input.mousePosition.x;
-
+			int number = (int)pixOffset / 10;
+			waveControllerX = currentPositionX;
 			instantiateWaveController.GetComponent<InstantiateWaveform> ().redraw (number);
+		}
+	}
 
-		} else if (pixOffset < -10) {
-			Debug.Log ("right");
-			int number = (int) pixOffset / 10;
-			mouseX = Input.mousePosition.x;
-			instantiateWaveController.GetComponent<InstantiateWaveform> ().redraw (number);
+	public void PlayPause() {
+		if (audioSource.isPlaying == true) {
+			audioSource.Pause ();
 		} else {
-			Debug.Log ("no");
+			audioSource.Play ();
 		}
 	}
 }
