@@ -12,6 +12,7 @@ public class EditorController : MonoBehaviour {
 	public float[] waveForm;
 
 	Vector3 startPosition;
+	float originalPositionX;
 	float mouseX;
 	AudioSource audioSource;
 	int resolution = 10;
@@ -93,6 +94,7 @@ public class EditorController : MonoBehaviour {
 		this.normalizeWaveForm ();
 			
 		instantiateWaveController.SetActive (true);
+		originalPositionX = instantiateWaveController.transform.position.x;
 		waveControllerX = Camera.main.WorldToScreenPoint(instantiateWaveController.transform.position).x;
 	}
 
@@ -150,7 +152,20 @@ public class EditorController : MonoBehaviour {
 		if (audioSource.isPlaying == true) {
 			audioSource.Pause ();
 		} else {
-			audioSource.Play ();
+			//get location
+			var currentPostionX = instantiateWaveController.transform.position.x;
+			float offset = originalPositionX - currentPostionX;
+			if (offset > 0) {
+				var current = offset / 0.1f;
+				current /= audioSource.clip.channels;
+				audioSource.timeSamples = (int)current * resolution;
+				audioSource.Play ();
+			} else {
+				audioSource.timeSamples = 0;
+				audioSource.Play ();
+			}
+
+
 		}
 	}
 }

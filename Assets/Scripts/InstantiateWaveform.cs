@@ -62,7 +62,7 @@ public class InstantiateWaveform : MonoBehaviour {
 				}
 			}
 			leftMost = i;
-			Debug.Log ("leftmost " + leftMost);
+			//Debug.Log ("leftmost " + leftMost);
 		}
 
 		if (number < 0) { //right
