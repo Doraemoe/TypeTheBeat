@@ -111,6 +111,12 @@ public class EditorController : MonoBehaviour {
 
 	void OnMouseDrag() {
 		if (instantiateWaveController.activeSelf) {
+
+			if (audioSource.isPlaying == true) {
+				audioSource.Pause ();
+			}
+
+
 			var currentPosition = Camera.main.ScreenToWorldPoint (Input.mousePosition);
 			var offset = startPosition.x - currentPosition.x;
 			var pixOffset = mouseX - Input.mousePosition.x;
@@ -120,15 +126,15 @@ public class EditorController : MonoBehaviour {
 
 			if (pixOffset > 10) {
 				//how many?
-				int number = (int)pixOffset / 10 + 1;
+				//int number = (int)pixOffset / 10 + 1;
 				mouseX = Input.mousePosition.x;
 
-				instantiateWaveController.GetComponent<InstantiateWaveform> ().redraw (number);
+				instantiateWaveController.GetComponent<InstantiateWaveform> ().redraw (Constants.kLeft);
 
 			} else if (pixOffset < -10) {
-				int number = (int)pixOffset / 10;
+				//int number = (int)pixOffset / 10;
 				mouseX = Input.mousePosition.x;
-				instantiateWaveController.GetComponent<InstantiateWaveform> ().redraw (number);
+				instantiateWaveController.GetComponent<InstantiateWaveform> ().redraw (Constants.kRight);
 			} else {
 				//Debug.Log ("no");
 			}
@@ -142,9 +148,9 @@ public class EditorController : MonoBehaviour {
 		var currentPositionX = Camera.main.WorldToScreenPoint(instantiateWaveController.transform.position).x;
 		var pixOffset =  waveControllerX - currentPositionX;
 		if (pixOffset > 10) {
-			int number = (int)pixOffset / 10;
+			//int number = (int)pixOffset / 10;
 			waveControllerX = currentPositionX;
-			instantiateWaveController.GetComponent<InstantiateWaveform> ().redraw (number);
+			instantiateWaveController.GetComponent<InstantiateWaveform> ().redraw (Constants.kLeft);
 		}
 	}
 
@@ -152,6 +158,7 @@ public class EditorController : MonoBehaviour {
 		if (audioSource.isPlaying == true) {
 			audioSource.Pause ();
 		} else {
+			waveControllerX = Camera.main.WorldToScreenPoint(instantiateWaveController.transform.position).x;
 			//get location
 			var currentPostionX = instantiateWaveController.transform.position.x;
 			float offset = originalPositionX - currentPostionX;

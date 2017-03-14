@@ -17,8 +17,12 @@ public class InstantiateWaveform : MonoBehaviour {
 		//var waveFormData = editorCtrl.waveForm;
 		waveFormGraph = new GameObject[editorCtrl.waveForm.Length];
 
-		for (i = 0; i < waveFormGraph.Length && i < 200; i++) {
-			generateWaveBar (i);
+		for (i = 0; i < waveFormGraph.Length; i++) {
+			var position = generateWaveBar (i);
+			if (position > Camera.main.pixelWidth) {
+				i += 1;
+				break;
+			}
 		}
 		rightMost = i;
 		//Debug.Log ("rightmost" + i);
@@ -29,7 +33,7 @@ public class InstantiateWaveform : MonoBehaviour {
 		
 	}
 
-	void generateWaveBar(int i) {
+	float generateWaveBar(int i) {
 		GameObject insWave = (GameObject)Instantiate (wavePrefab);
 		insWave.transform.position = this.transform.position;
 		insWave.transform.position += Vector3.right * i * 0.1f;
@@ -39,20 +43,26 @@ public class InstantiateWaveform : MonoBehaviour {
 		//var currentX = this.transform.position.x;
 		//this.transform.position.x = currentX + 10;
 		waveFormGraph [i] = insWave;
+		return Camera.main.WorldToScreenPoint (insWave.transform.position).x;
+
 	}
 
-	public void redraw(int number) {
+	public void redraw(int direction) {
 		//Debug.Log (number);
-		if (number > 0) { //left
+		if (direction == Constants.kLeft) { //left
 			//generate right
 			int i;
-			for (i = rightMost; i < rightMost + number && i < waveFormGraph.Length; i++) {
-				generateWaveBar (i);
+			for (i = rightMost; i < waveFormGraph.Length; i++) {
+				var position = generateWaveBar (i);
+				if (position > Camera.main.pixelWidth) {
+					i += 1;
+					break;
+				}
 			}
 			rightMost = i;
 
 			//disappear left
-			for (i = leftMost; i < leftMost + number && i < waveFormGraph.Length; i++) {
+			for (i = leftMost; i < waveFormGraph.Length; i++) {
 				var wavebar = GameObject.Find ("wave" + i);
 				var xPoint = Camera.main.WorldToScreenPoint (wavebar.transform.position).x;
 				if (xPoint < 0) {
@@ -65,16 +75,20 @@ public class InstantiateWaveform : MonoBehaviour {
 			//Debug.Log ("leftmost " + leftMost);
 		}
 
-		if (number < 0) { //right
+		if (direction == Constants.kRight) { //right
 			//generate left
 			int i;
-			for (i = leftMost - 1; i >= leftMost + number && i >= 0; i--) {
-				generateWaveBar (i);
+			for (i = leftMost - 1; i >= 0; i--) {
+				var position = generateWaveBar (i);
+				if (position < 0) {
+					i -= 1;
+					break;
+				}
 			}
 			leftMost = i + 1;
 
 			//disappear right
-			for (i = rightMost - 1; i >= rightMost + number && i >= 0; i--) {
+			for (i = rightMost - 1; i >= 0; i--) {
 				var wavebar = GameObject.Find ("wave" + i);
 				var xPoint = Camera.main.WorldToScreenPoint (wavebar.transform.position).x;
 				if (xPoint > Camera.main.pixelWidth) {
