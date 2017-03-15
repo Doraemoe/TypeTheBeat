@@ -11,6 +11,9 @@ public class EditorController : MonoBehaviour {
 
 	public GameObject instantiateWaveController;
 	public float[] waveForm;
+	public Canvas confirmMenu;
+	public Image blurImg;
+
 
 	Vector3 startPosition;
 	float originalPositionX;
@@ -21,9 +24,11 @@ public class EditorController : MonoBehaviour {
 	float waveControllerX;
 	float max = 0;
 
+
 	// Use this for initialization
 	void Start () {
 		audioSource = GetComponent<AudioSource> ();
+
 	}
 	
 	// Update is called once per frame
@@ -182,6 +187,16 @@ public class EditorController : MonoBehaviour {
 
 
 		}
+	}
+
+	public void backHome() {
+		blurImg.gameObject.SetActive (true);
+		confirmMenu.gameObject.SetActive (true);
+	}
+
+	public void cancel() {
+		confirmMenu.gameObject.SetActive (false);
+		blurImg.gameObject.SetActive (false);
 	}
 
 	public void LoadScene(string sceneName) {
