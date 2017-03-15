@@ -13,9 +13,14 @@ public class InstantiateWaveform : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		
+	}
+
+	void OnEnable() {
 		int i;
 		//var waveFormData = editorCtrl.waveForm;
 		waveFormGraph = new GameObject[editorCtrl.waveForm.Length];
+		this.transform.position = new Vector3 (0f, 1.2f, 0f);
 
 		for (i = 0; i < waveFormGraph.Length; i++) {
 			var position = generateWaveBar (i);
@@ -26,6 +31,13 @@ public class InstantiateWaveform : MonoBehaviour {
 		}
 		rightMost = i;
 		//Debug.Log ("rightmost" + i);
+	}
+
+	void OnDisable() {
+		foreach (Transform child in this.transform) {
+			Destroy (child.gameObject);
+		}
+
 	}
 	
 	// Update is called once per frame
@@ -66,7 +78,7 @@ public class InstantiateWaveform : MonoBehaviour {
 				var wavebar = GameObject.Find ("wave" + i);
 				var xPoint = Camera.main.WorldToScreenPoint (wavebar.transform.position).x;
 				if (xPoint < 0) {
-					wavebar.SetActive (false);
+					Destroy (wavebar);
 				} else {
 					break;
 				}
@@ -92,7 +104,7 @@ public class InstantiateWaveform : MonoBehaviour {
 				var wavebar = GameObject.Find ("wave" + i);
 				var xPoint = Camera.main.WorldToScreenPoint (wavebar.transform.position).x;
 				if (xPoint > Camera.main.pixelWidth) {
-					wavebar.SetActive (false);
+					Destroy (wavebar);//.SetActive (false);
 				} else {
 					break;
 				}

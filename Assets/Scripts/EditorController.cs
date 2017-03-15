@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using UnityEditor;
 
 [RequireComponent(typeof(BoxCollider2D))]
@@ -73,6 +74,9 @@ public class EditorController : MonoBehaviour {
 	}
 
 	void generateSoundWave() {
+		max = 0;
+		resolution = 10;
+
 		resolution = audioSource.clip.frequency / resolution;
 		samples = new float[audioSource.clip.samples * audioSource.clip.channels];
 		audioSource.clip.GetData (samples, 0);
@@ -92,6 +96,10 @@ public class EditorController : MonoBehaviour {
 		}
 
 		this.normalizeWaveForm ();
+
+		if (instantiateWaveController.activeSelf) {
+			instantiateWaveController.SetActive (false);
+		}
 			
 		instantiateWaveController.SetActive (true);
 		originalPositionX = instantiateWaveController.transform.position.x;
@@ -174,5 +182,9 @@ public class EditorController : MonoBehaviour {
 
 
 		}
+	}
+
+	public void LoadScene(string sceneName) {
+		SceneManager.LoadScene (sceneName);
 	}
 }
