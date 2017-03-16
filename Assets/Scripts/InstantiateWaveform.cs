@@ -5,6 +5,14 @@ using UnityEngine;
 
 public class InstantiateWaveform : MonoBehaviour {
 	public GameObject wavePrefab;
+	public GameObject noteA;
+	public GameObject noteS;
+	public GameObject noteD;
+	public GameObject noteF;
+	public GameObject noteJ;
+	public GameObject noteK;
+	public GameObject noteL;
+	public GameObject noteSC;
 	public EditorController editorCtrl;
 
 	GameObject[] waveFormGraph;
@@ -110,6 +118,35 @@ public class InstantiateWaveform : MonoBehaviour {
 				}
 			}
 			rightMost = i + 1;
+		}
+	}
+
+	public void drawNote(string note) {
+		if(note == "A") { 
+			GameObject a = (GameObject)Instantiate (noteA);
+			a.transform.parent = this.transform;
+			Debug.Log ((int)this.transform.position.x / 0.1f);
+		} else if (note == "S") { 
+			GameObject s = (GameObject)Instantiate (noteS);
+			s.transform.parent = this.transform;
+		} else if (note == "D") { 
+			GameObject d = (GameObject)Instantiate (noteD);
+			d.transform.parent = this.transform;
+		} else if (note == "F") { 
+			GameObject f = (GameObject)Instantiate (noteF);
+			f.transform.parent = this.transform;
+		} else if (note == "J") { 
+			GameObject j = (GameObject)Instantiate (noteJ);
+			j.transform.parent = this.transform;
+		} else if (note == "K") { 
+			GameObject k = (GameObject)Instantiate (noteK);
+			k.transform.parent = this.transform;
+		} else if (note == "L") { 
+			GameObject l = (GameObject)Instantiate (noteL);
+			l.transform.parent = this.transform;
+		} else if (note == "SC") { 
+			GameObject sc = (GameObject)Instantiate (noteSC);
+			sc.transform.parent = this.transform;
 		}
 	}
 		

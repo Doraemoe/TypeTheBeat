@@ -13,6 +13,7 @@ public class EditorController : MonoBehaviour {
 	public float[] waveForm;
 	public Canvas confirmMenu;
 	public Image blurImg;
+	public GameObject selectedObject;
 
 
 	Vector3 startPosition;
@@ -34,6 +35,24 @@ public class EditorController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+		//select note
+		if (Input.GetMouseButtonDown (0)) {
+			Vector2 ray = new Vector2 (Camera.main.ScreenToWorldPoint (Input.mousePosition).x, Camera.main.ScreenToWorldPoint (Input.mousePosition).y);
+
+			RaycastHit2D hit = Physics2D.Raycast (ray, Vector2.zero, 0f);
+			if (hit) {
+				clearColor ();
+				if (hit.transform.gameObject.tag == "Note") {
+					selectedObject = hit.transform.gameObject;
+					var color = selectedObject.GetComponent<Renderer> ().material.color;
+					color.a = 0.8f;
+					selectedObject.GetComponent<Renderer> ().material.color = color;
+				} else {
+					clearSelection ();
+				}
+			}
+		}
+
 		if (audioSource.isPlaying == true) {
 			/*
 			for (int i = 0; i < waveForm.Length; i++) {
@@ -49,8 +68,73 @@ public class EditorController : MonoBehaviour {
 			Vector3 c = new Vector3 (current * 0.04f, 0, 0);
 
 			Debug.DrawLine (c, c + Vector3.up * 50, Color.white);
-*/
+ 			*/
 			this.PlayMusic ();
+		}
+
+		if (instantiateWaveController.activeSelf) {
+			if (Input.GetKeyDown (KeyCode.Escape)) {
+				clearSelection ();
+			}
+			if (Input.GetKeyDown (KeyCode.Delete)) {
+				deleteSelection ();
+			}
+			if (Input.GetKeyDown (KeyCode.Backspace)) {
+				deleteSelection ();
+			}
+
+			if (Input.GetKeyDown (KeyCode.A)) {
+				instantiateWaveController.GetComponent<InstantiateWaveform> ().drawNote ("A");
+			} else if (Input.GetKeyDown (KeyCode.S)) {
+				instantiateWaveController.GetComponent<InstantiateWaveform> ().drawNote ("S");
+			} else if (Input.GetKeyDown (KeyCode.D)) {
+				instantiateWaveController.GetComponent<InstantiateWaveform> ().drawNote ("D");
+			} else if (Input.GetKeyDown (KeyCode.F)) {
+				instantiateWaveController.GetComponent<InstantiateWaveform> ().drawNote ("F");
+			} else if (Input.GetKeyDown (KeyCode.J)) {
+				instantiateWaveController.GetComponent<InstantiateWaveform> ().drawNote ("J");
+			} else if (Input.GetKeyDown (KeyCode.K)) {
+				instantiateWaveController.GetComponent<InstantiateWaveform> ().drawNote ("K");
+			} else if (Input.GetKeyDown (KeyCode.L)) {
+				instantiateWaveController.GetComponent<InstantiateWaveform> ().drawNote ("L");
+			} else if (Input.GetKeyDown (KeyCode.Semicolon)) {
+				instantiateWaveController.GetComponent<InstantiateWaveform> ().drawNote ("SC");
+			}
+		}
+	}
+
+	void deleteSelection() {
+		if (selectedObject == null) {
+			return;
+		}
+
+		if (selectedObject.tag == "Note") {
+			Destroy (selectedObject);
+		}
+
+		selectedObject = null;
+	}
+
+	void clearSelection() {
+		if (selectedObject == null) {
+			return;
+		}
+
+		clearColor ();
+
+		selectedObject = null;
+
+	}
+
+	void clearColor() {
+		if (selectedObject == null) {
+			return;
+		}
+
+		if (selectedObject.tag == "Note") {
+			var color = selectedObject.GetComponent<Renderer> ().material.color;
+			color.a = 1f;
+			selectedObject.GetComponent<Renderer> ().material.color = color;
 		}
 	}
 
