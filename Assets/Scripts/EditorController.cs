@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -24,6 +25,8 @@ public class EditorController : MonoBehaviour {
 	float[] samples;
 	float waveControllerX;
 	float max = 0;
+	float[] notePositions;
+	string[] noteName;
 
 
 	// Use this for initialization
@@ -287,6 +290,32 @@ public class EditorController : MonoBehaviour {
 	}
 
 	public void save() {
+		var notes = GameObject.FindGameObjectsWithTag ("Note");
+		//notePositions = new float[notes.Length];
+		//noteName = new string[notes.Length];
 
+		/*
+		for (int i = 0; i < notes.Length; i++) {
+			notePositions [i] = notes [i].transform.position.x - instantiateWaveController.transform.position.x;
+			noteName [i] = notes [i].name;
+			Debug.Log (notePositions [i] + "+" + noteName [i]);
+		}
+		*/
+
+		var path = EditorUtility.SaveFilePanel(
+			"Save Notemap",
+			System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop),
+			"Notemap.png",
+			"txt");
+
+		if(path.Length != 0)
+		{
+			var sr = File.CreateText(path);
+			for (int i = 0; i < notes.Length; i++) {
+				sr.WriteLine (notes [i].transform.position.x - instantiateWaveController.transform.position.x);
+				sr.WriteLine (notes [i].name);
+			}
+			sr.Close();
+		}
 	}
 }

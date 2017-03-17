@@ -125,28 +125,36 @@ public class InstantiateWaveform : MonoBehaviour {
 		if(note == "A") { 
 			GameObject a = (GameObject)Instantiate (noteA);
 			a.transform.parent = this.transform;
-			Debug.Log (this.transform.position.x);
+			a.name = "A";
+			//Debug.Log (this.transform.position.x);
 		} else if (note == "S") { 
 			GameObject s = (GameObject)Instantiate (noteS);
 			s.transform.parent = this.transform;
+			s.name = "S";
 		} else if (note == "D") { 
 			GameObject d = (GameObject)Instantiate (noteD);
 			d.transform.parent = this.transform;
+			d.name = "D";
 		} else if (note == "F") { 
 			GameObject f = (GameObject)Instantiate (noteF);
 			f.transform.parent = this.transform;
+			f.name = "F";
 		} else if (note == "J") { 
 			GameObject j = (GameObject)Instantiate (noteJ);
 			j.transform.parent = this.transform;
+			j.name = "J";
 		} else if (note == "K") { 
 			GameObject k = (GameObject)Instantiate (noteK);
 			k.transform.parent = this.transform;
+			k.name = "K";
 		} else if (note == "L") { 
 			GameObject l = (GameObject)Instantiate (noteL);
 			l.transform.parent = this.transform;
+			l.name = "L";
 		} else if (note == "SC") { 
 			GameObject sc = (GameObject)Instantiate (noteSC);
 			sc.transform.parent = this.transform;
+			sc.name = "SC";
 		}
 	}
 		
