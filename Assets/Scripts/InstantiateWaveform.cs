@@ -125,7 +125,7 @@ public class InstantiateWaveform : MonoBehaviour {
 		if(note == "A") { 
 			GameObject a = (GameObject)Instantiate (noteA);
 			a.transform.parent = this.transform;
-			Debug.Log ((int)this.transform.position.x / 0.1f);
+			Debug.Log (this.transform.position.x);
 		} else if (note == "S") { 
 			GameObject s = (GameObject)Instantiate (noteS);
 			s.transform.parent = this.transform;

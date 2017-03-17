@@ -170,15 +170,17 @@ public class EditorController : MonoBehaviour {
 		samples = new float[audioSource.clip.samples * audioSource.clip.channels];
 		audioSource.clip.GetData (samples, 0);
 
-		waveForm = new float[(samples.Length/resolution)];
+		//waveForm = new float[(samples.Length/resolution)];
+
+		waveForm = new float[audioSource.clip.samples / resolution];
 
 		for (int i = 0; i < waveForm.Length; i++) {
 			waveForm[i] = 0;
-			for (int ii = 0; ii < resolution; ii++) {
+			for (int ii = 0; ii < resolution * audioSource.clip.channels; ii++) {
 				//waveForm[i] += samples[(i * resolution) + ii];
-				waveForm [i] += Mathf.Abs (samples [(i * resolution) + ii]); //<-- another option
+				waveForm [i] += Mathf.Abs (samples [(i * resolution * audioSource.clip.channels) + ii]); 
 			}
-			waveForm[i] /= resolution;
+			waveForm[i] /= resolution * audioSource.clip.channels;
 			if (waveForm [i] > max) {
 				max = waveForm [i];
 			}
@@ -222,12 +224,9 @@ public class EditorController : MonoBehaviour {
 			startPosition = currentPosition;
 
 			if (pixOffset > 10) {
-				//how many?
 				//int number = (int)pixOffset / 10 + 1;
 				mouseX = Input.mousePosition.x;
-
 				instantiateWaveController.GetComponent<InstantiateWaveform> ().redraw (Constants.kLeft);
-
 			} else if (pixOffset < -10) {
 				//int number = (int)pixOffset / 10;
 				mouseX = Input.mousePosition.x;
@@ -240,7 +239,7 @@ public class EditorController : MonoBehaviour {
 
 	void PlayMusic() {
 		int current = audioSource.timeSamples / resolution;
-		current *= audioSource.clip.channels;
+		//current *= audioSource.clip.channels;
 		instantiateWaveController.transform.position = Vector3.left * current * 0.1f + Vector3.up * 1.2f;
 		var currentPositionX = Camera.main.WorldToScreenPoint(instantiateWaveController.transform.position).x;
 		var pixOffset =  waveControllerX - currentPositionX;
@@ -261,7 +260,7 @@ public class EditorController : MonoBehaviour {
 			float offset = originalPositionX - currentPostionX;
 			if (offset > 0) {
 				var current = offset / 0.1f;
-				current /= audioSource.clip.channels;
+				//current /= audioSource.clip.channels;
 				audioSource.timeSamples = (int)current * resolution;
 				audioSource.Play ();
 			} else {
@@ -285,5 +284,9 @@ public class EditorController : MonoBehaviour {
 
 	public void LoadScene(string sceneName) {
 		SceneManager.LoadScene (sceneName);
+	}
+
+	public void save() {
+
 	}
 }
