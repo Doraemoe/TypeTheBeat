@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Globalization;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -15,6 +16,8 @@ public class EditorController : MonoBehaviour {
 	public Canvas confirmMenu;
 	public Image blurImg;
 	public GameObject selectedObject;
+	public Button loadNotesBtn;
+	public Button saveBtn;
 
 
 	Vector3 startPosition;
@@ -196,6 +199,7 @@ public class EditorController : MonoBehaviour {
 		}
 			
 		instantiateWaveController.SetActive (true);
+		loadNotesBtn.gameObject.SetActive (true);
 		originalPositionX = instantiateWaveController.transform.position.x;
 		waveControllerX = Camera.main.WorldToScreenPoint(instantiateWaveController.transform.position).x;
 	}
@@ -305,17 +309,52 @@ public class EditorController : MonoBehaviour {
 		var path = EditorUtility.SaveFilePanel(
 			"Save Notemap",
 			System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop),
-			"Notemap.png",
-			"txt");
+			"Notemap.notemap",
+			"notemap");
 
 		if(path.Length != 0)
 		{
 			var sr = File.CreateText(path);
 			for (int i = 0; i < notes.Length; i++) {
-				sr.WriteLine (notes [i].transform.position.x - instantiateWaveController.transform.position.x);
 				sr.WriteLine (notes [i].name);
+				sr.WriteLine (notes [i].transform.position.x - instantiateWaveController.transform.position.x);
 			}
 			sr.Close();
+		}
+	}
+
+	public void loadNotes() {
+		var path = EditorUtility.OpenFilePanel(
+			"Open Notemap",
+			System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop),
+			"notemap");
+
+		if (path.Length != 0) {
+			if (instantiateWaveController.activeSelf) {
+				string name;
+				float position;
+
+				//clear old notes
+				var notes = GameObject.FindGameObjectsWithTag ("Note");
+				foreach (GameObject note in notes) {
+					Destroy (note);
+				}
+
+
+
+				var reader = new StreamReader (path);
+
+				using (reader) {
+					do {
+						name = reader.ReadLine();
+						if(name != null) {
+							position = float.Parse(reader.ReadLine(), CultureInfo.InvariantCulture.NumberFormat);
+							instantiateWaveController.GetComponent<InstantiateWaveform> ().drawNoteWithPosition(name, position);
+						}
+					} while (name != null);
+					reader.Close ();
+				}
+			}
 		}
 	}
 }
