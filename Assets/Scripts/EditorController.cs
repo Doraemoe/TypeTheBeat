@@ -5,7 +5,9 @@ using System.Globalization;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using UnityEditor;
+
+using SFB;
+//using UnityEditor;
 
 [RequireComponent(typeof(BoxCollider2D))]
 
@@ -19,7 +21,7 @@ public class EditorController : MonoBehaviour {
 	public Button loadNotesBtn;
 	public Button saveBtn;
 
-
+	string songName;
 	Vector3 startPosition;
 	float originalPositionX;
 	float mouseX;
@@ -146,13 +148,26 @@ public class EditorController : MonoBehaviour {
 
 	public void OpenFile () {
 
+		var extensions = new [] {
+			new ExtensionFilter("Music Files", "ogg"),
+		};
+
+		/*
 		var path = EditorUtility.OpenFilePanel(
 			"Open Music",
 			System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop),
 			"ogg");
-		
-		if (path.Length != 0) {
-			StartCoroutine (LoadSongCoroutine (path));
+		*/
+
+		var path = StandaloneFileBrowser.OpenFilePanel(
+			"Open File", 
+			System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop), 
+			extensions, 
+			false);
+
+		if (path[0].Length != 0) {
+			songName = Path.GetFileNameWithoutExtension (path[0]);
+			StartCoroutine (LoadSongCoroutine (path[0]));
 		}
 	}
 
@@ -306,11 +321,23 @@ public class EditorController : MonoBehaviour {
 		}
 		*/
 
+		var extensionList = new [] {
+			new ExtensionFilter("Notemap", "notemap"),
+		};
+
+		var path = StandaloneFileBrowser.SaveFilePanel(
+			"Save Notemap", 
+			System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop),
+			"song.notemap",
+			extensionList);
+
+		/*
 		var path = EditorUtility.SaveFilePanel(
 			"Save Notemap",
 			System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop),
-			"Notemap.notemap",
+			songName + ".notemap",
 			"notemap");
+			*/
 
 		if(path.Length != 0)
 		{
@@ -324,12 +351,30 @@ public class EditorController : MonoBehaviour {
 	}
 
 	public void loadNotes() {
+
+		var extensions = new [] {
+			new ExtensionFilter("Notemap File", "notemap"),
+		};
+
+		var path = StandaloneFileBrowser.OpenFilePanel(
+			"Open Notemap",
+			System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop),
+			extensions,
+			false);
+
+		//Debug.Log (path[0]);
+
+
+		/*
 		var path = EditorUtility.OpenFilePanel(
 			"Open Notemap",
 			System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop),
 			"notemap");
+		*/
 
-		if (path.Length != 0) {
+		if (path[0].Length != 0) {
+			path[0] = new System.Uri(path[0]).AbsolutePath; 
+
 			if (instantiateWaveController.activeSelf) {
 				string name;
 				float position;
@@ -342,7 +387,7 @@ public class EditorController : MonoBehaviour {
 
 
 
-				var reader = new StreamReader (path);
+				var reader = new StreamReader (path[0]);
 
 				using (reader) {
 					do {
