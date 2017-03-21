@@ -14,7 +14,7 @@ namespace SFB {
 
         public string[] OpenFilePanel(string title, string directory, ExtensionFilter[] extensions, bool multiselect) {
             var paths = Marshal.PtrToStringAnsi(DialogOpenFilePanel(title, directory, GetFilterFromFileExtensionList(extensions), multiselect));
-            return paths.Split((char)28);
+			return paths.Split((char)28);
         }
 
         public string[] OpenFolderPanel(string title, string directory, bool multiselect) {

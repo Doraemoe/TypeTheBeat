@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Globalization;
+using System.Xml;
+
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -20,18 +22,23 @@ public class EditorController : MonoBehaviour {
 	public GameObject selectedObject;
 	public Button loadNotesBtn;
 	public Button saveBtn;
+	public Text playPauseTxt;
+	public Text songName;
+	public Text songArtist;
+	public InputField nameInput;
+	public InputField artistInput;
 
-	string songName;
 	Vector3 startPosition;
 	float originalPositionX;
 	float mouseX;
 	AudioSource audioSource;
-	int resolution = 10;
+	int resolution = 20;
 	float[] samples;
 	float waveControllerX;
 	float max = 0;
 	float[] notePositions;
 	string[] noteName;
+	string songLocation;
 
 
 	// Use this for initialization
@@ -61,7 +68,7 @@ public class EditorController : MonoBehaviour {
 			}
 		}
 
-		if (audioSource.isPlaying == true) {
+		if (audioSource.isPlaying) {
 			/*
 			for (int i = 0; i < waveForm.Length; i++) {
 				Vector3 sv = new Vector3 (i * 0.04f, waveForm [i] * 50, 0);
@@ -78,9 +85,11 @@ public class EditorController : MonoBehaviour {
 			Debug.DrawLine (c, c + Vector3.up * 50, Color.white);
  			*/
 			this.PlayMusic ();
+		} else {
+			playPauseTxt.text = "Play";
 		}
 
-		if (instantiateWaveController.activeSelf) {
+		if (instantiateWaveController.activeSelf && !nameInput.isFocused && !artistInput.isFocused) {
 			if (Input.GetKeyDown (KeyCode.Escape)) {
 				clearSelection ();
 			}
@@ -166,7 +175,8 @@ public class EditorController : MonoBehaviour {
 			false);
 
 		if (path[0].Length != 0) {
-			songName = Path.GetFileNameWithoutExtension (path[0]);
+			songLocation = new System.Uri(path[0]).AbsolutePath; 
+			songLocation = WWW.UnEscapeURL (songLocation);
 			StartCoroutine (LoadSongCoroutine (path[0]));
 		}
 	}
@@ -174,7 +184,7 @@ public class EditorController : MonoBehaviour {
 
 	IEnumerator LoadSongCoroutine(string path)
 	{
-		var audioLocation = new WWW ("file://" + path);
+		var audioLocation = new WWW (path);
 
 		yield return audioLocation;
 
@@ -185,7 +195,7 @@ public class EditorController : MonoBehaviour {
 
 	void generateSoundWave() {
 		max = 0;
-		resolution = 10;
+		resolution = 20;
 
 		resolution = audioSource.clip.frequency / resolution;
 		samples = new float[audioSource.clip.samples * audioSource.clip.channels];
@@ -234,6 +244,7 @@ public class EditorController : MonoBehaviour {
 		if (instantiateWaveController.activeSelf) {
 
 			if (audioSource.isPlaying == true) {
+				playPauseTxt.text = "Play";
 				audioSource.Pause ();
 			}
 
@@ -260,6 +271,7 @@ public class EditorController : MonoBehaviour {
 	}
 
 	void PlayMusic() {
+
 		int current = audioSource.timeSamples / resolution;
 		//current *= audioSource.clip.channels;
 		instantiateWaveController.transform.position = Vector3.left * current * 0.1f + Vector3.up * 1.2f;
@@ -274,6 +286,7 @@ public class EditorController : MonoBehaviour {
 
 	public void PlayPause() {
 		if (audioSource.isPlaying == true) {
+			playPauseTxt.text = "Play";
 			audioSource.Pause ();
 		} else {
 			waveControllerX = Camera.main.WorldToScreenPoint(instantiateWaveController.transform.position).x;
@@ -284,9 +297,11 @@ public class EditorController : MonoBehaviour {
 				var current = offset / 0.1f;
 				//current /= audioSource.clip.channels;
 				audioSource.timeSamples = (int)current * resolution;
+				playPauseTxt.text = "Pause";
 				audioSource.Play ();
 			} else {
 				audioSource.timeSamples = 0;
+				playPauseTxt.text = "Pause";
 				audioSource.Play ();
 			}
 
@@ -310,44 +325,47 @@ public class EditorController : MonoBehaviour {
 
 	public void save() {
 		var notes = GameObject.FindGameObjectsWithTag ("Note");
-		//notePositions = new float[notes.Length];
-		//noteName = new string[notes.Length];
 
-		/*
-		for (int i = 0; i < notes.Length; i++) {
-			notePositions [i] = notes [i].transform.position.x - instantiateWaveController.transform.position.x;
-			noteName [i] = notes [i].name;
-			Debug.Log (notePositions [i] + "+" + noteName [i]);
-		}
-		*/
-
-		var extensionList = new [] {
-			new ExtensionFilter("Notemap", "notemap"),
-		};
-
-		var path = StandaloneFileBrowser.SaveFilePanel(
-			"Save Notemap", 
+		var path = StandaloneFileBrowser.OpenFolderPanel(
+			"Save to a folder", 
 			System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop),
-			"song.notemap",
-			extensionList);
+			false);
 
-		/*
-		var path = EditorUtility.SaveFilePanel(
-			"Save Notemap",
-			System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop),
-			songName + ".notemap",
-			"notemap");
-			*/
 
-		if(path.Length != 0)
-		{
-			var sr = File.CreateText(path);
+		if(path[0].Length != 0) {
+			path[0] = new System.Uri(path[0]).AbsolutePath; 
+			path[0] = WWW.UnEscapeURL (path[0]);
+
+			var sr = File.CreateText(path[0] + "song.notemap");
 			for (int i = 0; i < notes.Length; i++) {
 				sr.WriteLine (notes [i].name);
 				sr.WriteLine (notes [i].transform.position.x - instantiateWaveController.transform.position.x);
 			}
 			sr.Close();
+
+			writeMetaXML (path[0] + "meta.xml");
+
+			File.Copy (songLocation, path [0] + "song.ogg");
 		}
+	}
+
+	void writeMetaXML(string path) {
+		XmlTextWriter writer = new XmlTextWriter(path, System.Text.Encoding.UTF8);
+		writer.WriteStartDocument(true);
+		writer.Formatting = Formatting.Indented;
+		writer.Indentation = 2;
+		writer.WriteStartElement("Song");
+
+		writer.WriteStartElement("Name");
+		writer.WriteString(songName.text);
+		writer.WriteEndElement();
+		writer.WriteStartElement("Artist");
+		writer.WriteString(songArtist.text);
+		writer.WriteEndElement();
+
+		writer.WriteEndElement();
+		writer.WriteEndDocument();
+		writer.Close();
 	}
 
 	public void loadNotes() {
@@ -373,7 +391,9 @@ public class EditorController : MonoBehaviour {
 		*/
 
 		if (path[0].Length != 0) {
+			
 			path[0] = new System.Uri(path[0]).AbsolutePath; 
+			path[0] = WWW.UnEscapeURL (path[0]);
 
 			if (instantiateWaveController.activeSelf) {
 				string name;
