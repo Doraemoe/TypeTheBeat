@@ -1,8 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class SongButtonController : MonoBehaviour {
 
@@ -35,7 +37,15 @@ public class SongButtonController : MonoBehaviour {
 	}
 
 	void setDisplay() {
-		
+		if (selectionObj.GetComponent<SelectionController> ().lastSelected != null &&
+			selectionObj.GetComponent<SelectionController> ().lastSelected.GetInstanceID() == gameObject.GetInstanceID()) {
+			Dictionary<string, string> para = new Dictionary<string, string> ();
+			para.Add ("path", path);
+			SceneInfo.setParameters (para);
+			SceneManager.LoadScene ("Play");
+		}
+		selectionObj.GetComponent<SelectionController> ().lastSelected = gameObject;
+
 		byte[] FileData;
 		string[] files = Directory.GetFiles (path, "bg.*");
 

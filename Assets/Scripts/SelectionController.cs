@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class SelectionController : MonoBehaviour {
 
+	public GameObject lastSelected;
+
 	AudioSource audioSource;
 
 	// Use this for initialization
