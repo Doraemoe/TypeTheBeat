@@ -1,51 +1,39 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.Xml;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SelectionController : MonoBehaviour {
 
+	AudioSource audioSource;
+
 	// Use this for initialization
 	void Start () {
-		var path = Application.dataPath + "/StreamingAssets/Songs";
-		var directories = Directory.GetDirectories(path);
-
-		foreach (var d in directories) {
-			Debug.Log (d);
-		}
-
-		XmlTextWriter writer = new XmlTextWriter(directories[0] + "/meta.xml", System.Text.Encoding.UTF8);
-		writer.WriteStartDocument(true);
-		writer.Formatting = Formatting.Indented;
-		writer.Indentation = 2;
-		writer.WriteStartElement("Song");
-
-		writer.WriteStartElement("Name");
-		writer.WriteString("test song");
-		writer.WriteEndElement();
-		writer.WriteStartElement("Artist");
-		writer.WriteString("test artist");
-		writer.WriteEndElement();
-
-		writer.WriteEndElement();
-		writer.WriteEndDocument();
-		writer.Close();
-
-		XmlDocument doc = new XmlDocument();
-		doc.Load (directories[0] + "/meta.xml");
-
-		var xmlnode = doc.GetElementsByTagName ("Name");
-		Debug.Log (xmlnode[0].InnerText);
-
-		xmlnode = doc.GetElementsByTagName ("Artist");
-		Debug.Log (xmlnode[0].InnerText);
-
-
+		audioSource = GetComponent<AudioSource> ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		
+	}
+
+	public void LoadScene(string sceneName) {
+		SceneManager.LoadScene (sceneName);
+	}
+
+
+	public void loadAndPlayMusic(string path) {
+		StartCoroutine (LoadSongCoroutine (path));
+	}
+
+	IEnumerator LoadSongCoroutine(string path)
+	{
+		var audioLocation = new WWW ("file://" + path);
+
+		yield return audioLocation;
+
+		audioSource.clip = audioLocation.GetAudioClip (false, false);
+		audioSource.Play ();
+
 	}
 }
