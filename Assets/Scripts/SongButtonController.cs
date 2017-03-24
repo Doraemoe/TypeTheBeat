@@ -13,6 +13,7 @@ public class SongButtonController : MonoBehaviour {
 	public Text songArtist;
 	public GameObject selectionObj;
 
+
 	string path;
 
 	// Use this for initialization
@@ -32,11 +33,7 @@ public class SongButtonController : MonoBehaviour {
 	}
 
 	public void setDisplayAndPlay() {
-		setDisplay ();
-		playMusic ();
-	}
-
-	void setDisplay() {
+		
 		if (selectionObj.GetComponent<SelectionController> ().lastSelected != null &&
 			selectionObj.GetComponent<SelectionController> ().lastSelected.GetInstanceID() == gameObject.GetInstanceID()) {
 			Dictionary<string, string> para = new Dictionary<string, string> ();
@@ -46,6 +43,13 @@ public class SongButtonController : MonoBehaviour {
 		}
 		selectionObj.GetComponent<SelectionController> ().lastSelected = gameObject;
 
+		setDisplay ();
+		playMusic ();
+	}
+
+	void setDisplay() {
+
+
 		byte[] FileData;
 		string[] files = Directory.GetFiles (path, "bg.*");
 
@@ -53,7 +57,9 @@ public class SongButtonController : MonoBehaviour {
 		FileData = File.ReadAllBytes(files[0]);
 		tex.LoadImage(FileData);
 
-		GameObject bg = GameObject.FindGameObjectWithTag ("Background");
+		RawImage backgroundImg = GameObject.FindGameObjectWithTag ("Background").GetComponent<RawImage>();
+		backgroundImg.texture = tex;
+		/*
 		bg.GetComponent<SpriteRenderer>().sprite = Sprite.Create(tex, new Rect(0,0, tex.width, tex.height), new Vector2(0.5f,0.5f));
 
 		if(Screen.height > tex.height || Screen.width > tex.width) {
@@ -66,6 +72,7 @@ public class SongButtonController : MonoBehaviour {
 
 			bg.transform.localScale = new Vector3 (sc, sc, 1f);
 		}
+		*/
 	}
 
 	void playMusic() {
