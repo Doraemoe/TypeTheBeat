@@ -162,7 +162,7 @@ public class InstantiateWaveform : MonoBehaviour {
 		if(note == "A") { 
 			GameObject a = (GameObject)Instantiate (noteA);
 			a.transform.parent = this.transform;
-			var tmp = this.transform.position;
+			var tmp = a.transform.position;
 			tmp.x += offset; 
 			a.transform.position = tmp;
 			a.name = "A";
@@ -170,49 +170,49 @@ public class InstantiateWaveform : MonoBehaviour {
 		} else if (note == "S") { 
 			GameObject s = (GameObject)Instantiate (noteS);
 			s.transform.parent = this.transform;
-			var tmp = this.transform.position;
+			var tmp = s.transform.position;
 			tmp.x += offset; 
 			s.transform.position = tmp;
 			s.name = "S";
 		} else if (note == "D") { 
 			GameObject d = (GameObject)Instantiate (noteD);
 			d.transform.parent = this.transform;
-			var tmp = this.transform.position;
+			var tmp = d.transform.position;
 			tmp.x += offset; 
 			d.transform.position = tmp;
 			d.name = "D";
 		} else if (note == "F") { 
 			GameObject f = (GameObject)Instantiate (noteF);
 			f.transform.parent = this.transform;
-			var tmp = this.transform.position;
+			var tmp = f.transform.position;
 			tmp.x += offset; 
 			f.transform.position = tmp;
 			f.name = "F";
 		} else if (note == "J") { 
 			GameObject j = (GameObject)Instantiate (noteJ);
 			j.transform.parent = this.transform;
-			var tmp = this.transform.position;
+			var tmp = j.transform.position;
 			tmp.x += offset; 
 			j.transform.position = tmp;
 			j.name = "J";
 		} else if (note == "K") { 
 			GameObject k = (GameObject)Instantiate (noteK);
 			k.transform.parent = this.transform;
-			var tmp = this.transform.position;
+			var tmp = k.transform.position;
 			tmp.x += offset; 
 			k.transform.position = tmp;
 			k.name = "K";
 		} else if (note == "L") { 
 			GameObject l = (GameObject)Instantiate (noteL);
 			l.transform.parent = this.transform;
-			var tmp = this.transform.position;
+			var tmp = l.transform.position;
 			tmp.x += offset; 
 			l.transform.position = tmp;
 			l.name = "L";
 		} else if (note == "SC") { 
 			GameObject sc = (GameObject)Instantiate (noteSC);
 			sc.transform.parent = this.transform;
-			var tmp = this.transform.position;
+			var tmp = sc.transform.position;
 			tmp.x += offset; 
 			sc.transform.position = tmp;
 			sc.name = "SC";
