@@ -362,6 +362,9 @@ public class EditorController : MonoBehaviour {
 		writer.WriteStartElement("Artist");
 		writer.WriteString(songArtist.text);
 		writer.WriteEndElement();
+		writer.WriteStartElement("Resolution");
+		writer.WriteString(resolution.ToString());
+		writer.WriteEndElement();
 
 		writer.WriteEndElement();
 		writer.WriteEndDocument();

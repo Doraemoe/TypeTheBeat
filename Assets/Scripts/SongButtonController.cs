@@ -15,6 +15,7 @@ public class SongButtonController : MonoBehaviour {
 
 
 	string path;
+	string resolution;
 
 	// Use this for initialization
 	void Start () {
@@ -26,10 +27,11 @@ public class SongButtonController : MonoBehaviour {
 		
 	}
 
-	public void setup (string name, string artist, string path) {
+	public void setup (string name, string artist, string path, string resolution) {
 		songName.text = name;
 		songArtist.text = artist;
 		this.path = path;
+		this.resolution = resolution;
 	}
 
 	public void setDisplayAndPlay() {
@@ -38,6 +40,7 @@ public class SongButtonController : MonoBehaviour {
 			selectionObj.GetComponent<SelectionController> ().lastSelected.GetInstanceID() == gameObject.GetInstanceID()) {
 			Dictionary<string, string> para = new Dictionary<string, string> ();
 			para.Add ("path", path);
+			para.Add ("resolution", resolution);
 			SceneInfo.setParameters (para);
 			SceneManager.LoadScene ("Play");
 		}

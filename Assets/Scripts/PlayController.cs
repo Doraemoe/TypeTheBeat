@@ -13,6 +13,7 @@ public class PlayController : MonoBehaviour {
 	public Button yesBtn;
 	public Button noBtn;
 	public Image darkImg;
+	public Image positionImg;
 
 	public GameObject noteA;
 	public GameObject noteS;
@@ -24,19 +25,26 @@ public class PlayController : MonoBehaviour {
 	public GameObject noteSC;
 
 	string path;
+	int resolution;
+	float distance;
+	float timeDelay;
+	float speed;
 	Dictionary<string, float> notemap;
 	AudioSource audioSource;
+	bool finishedPrepare = false;
 	// Use this for initialization
 
 	void Start () {
 		audioSource = GetComponent<AudioSource> ();
 		//Debug.Log( SceneInfo.getValueForKey ("path"));
 		path = SceneInfo.getValueForKey ("path");
+		resolution = int.Parse(SceneInfo.getValueForKey ("resolution"));
 		notemap = new Dictionary<string, float>();
 		setDisplay ();
 		loadNotemap ();
-		StartCoroutine(LoadSongCoroutine ());
 		prepareNote ();
+
+		StartCoroutine(LoadSongCoroutine ());
 	}
 	
 	// Update is called once per frame
@@ -44,6 +52,17 @@ public class PlayController : MonoBehaviour {
 		if (Input.GetKeyDown (KeyCode.Escape)) {
 			pauseAndDisplayMenu ();
 		}
+
+		if(audioSource.isPlaying) {
+			//Debug.Log(audioSource.timeSamples);
+			renderNotes ();
+		}
+	}
+
+	void renderNotes() {
+		var pos = this.transform.position;
+		pos.x -= Time.deltaTime * speed;
+		this.transform.position = pos;
 	}
 
 	public void goBack () {
@@ -90,65 +109,95 @@ public class PlayController : MonoBehaviour {
 
 		audioSource.clip = audioLocation.GetAudioClip (false, false);
 
-		//audioSource.Play ();
+		Debug.Log (audioSource.clip.frequency);
+
+		//float t = 0f;
+
+		//Debug.Log (audioSource.clip.frequency);
+
+		timeDelay = distance / 0.1f * resolution / audioSource.clip.frequency;
+		Debug.Log (timeDelay);
+
+		speed = distance / timeDelay;
+		audioSource.PlayDelayed (timeDelay);
+		//audioSource.PlayDelayed (5);
 	}
 
 	void prepareNote() {
+
+		float p = Camera.main.ScreenToWorldPoint (new Vector3(Screen.width, Screen.height)).x;
+		Debug.Log (p);
+		var pos = this.transform.position;
+		pos.x = p;
+		this.transform.position = pos;
+
+		Debug.Log (positionImg.transform.position);
+
+		distance = p - positionImg.transform.position.x;
+
 		foreach (KeyValuePair<string, float> entry in notemap) {
 			if(entry.Key == "A") { 
 				GameObject a = (GameObject)Instantiate (noteA);
 				a.transform.parent = this.transform;
-				var tmp = a.transform.position;
+				var tmp = this.transform.position;
 				tmp.x += entry.Value; 
+				tmp.y += a.transform.position.y;
 				a.transform.position = tmp;
 				a.name = "A";
 			} else if (entry.Key == "S") { 
 				GameObject s = (GameObject)Instantiate (noteS);
 				s.transform.parent = this.transform;
-				var tmp = s.transform.position;
+				var tmp = this.transform.position;
 				tmp.x += entry.Value; 
+				tmp.y += s.transform.position.y;
 				s.transform.position = tmp;
 				s.name = "S";
 			} else if (entry.Key == "D") { 
 				GameObject d = (GameObject)Instantiate (noteD);
 				d.transform.parent = this.transform;
-				var tmp = d.transform.position;
-				tmp.x += entry.Value; 
+				var tmp = this.transform.position;
+				tmp.x += entry.Value;
+				tmp.y += d.transform.position.y;
 				d.transform.position = tmp;
 				d.name = "D";
 			} else if (entry.Key == "F") { 
 				GameObject f = (GameObject)Instantiate (noteF);
 				f.transform.parent = this.transform;
-				var tmp = f.transform.position;
+				var tmp = this.transform.position;
 				tmp.x += entry.Value; 
+				tmp.y += f.transform.position.y;
 				f.transform.position = tmp;
 				f.name = "F";
 			} else if (entry.Key == "J") { 
 				GameObject j = (GameObject)Instantiate (noteJ);
 				j.transform.parent = this.transform;
-				var tmp = j.transform.position;
+				var tmp = this.transform.position;
 				tmp.x += entry.Value; 
+				tmp.y += j.transform.position.y;
 				j.transform.position = tmp;
 				j.name = "J";
 			} else if (entry.Key == "K") { 
 				GameObject k = (GameObject)Instantiate (noteK);
 				k.transform.parent = this.transform;
-				var tmp = k.transform.position;
+				var tmp = this.transform.position;
 				tmp.x += entry.Value; 
+				tmp.y += k.transform.position.y;
 				k.transform.position = tmp;
 				k.name = "K";
 			} else if (entry.Key == "L") { 
 				GameObject l = (GameObject)Instantiate (noteL);
 				l.transform.parent = this.transform;
-				var tmp = l.transform.position;
+				var tmp = this.transform.position;
 				tmp.x += entry.Value; 
+				tmp.y += l.transform.position.y;
 				l.transform.position = tmp;
 				l.name = "L";
 			} else if (entry.Key == "SC") { 
 				GameObject sc = (GameObject)Instantiate (noteSC);
 				sc.transform.parent = this.transform;
-				var tmp = sc.transform.position;
+				var tmp = this.transform.position;
 				tmp.x += entry.Value; 
+				tmp.y += sc.transform.position.y;
 				sc.transform.position = tmp;
 				sc.name = "SC";
 			}
@@ -156,6 +205,9 @@ public class PlayController : MonoBehaviour {
 	}
 
 	void pauseAndDisplayMenu() {
+		audioSource.Pause ();
+
+
 		darkImg.gameObject.SetActive (true);
 		confirmCanvas.gameObject.SetActive (true);
 	}
@@ -165,6 +217,8 @@ public class PlayController : MonoBehaviour {
 	}
 
 	public void clickedNo() {
+		audioSource.Play ();
+
 		darkImg.gameObject.SetActive (false);
 		confirmCanvas.gameObject.SetActive (false);
 	}
