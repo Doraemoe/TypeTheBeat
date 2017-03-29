@@ -77,6 +77,16 @@ public class PlayController : MonoBehaviour {
 			renderNotes ();
 		} else {
 			if (!paused && played) {
+				Dictionary<string, string> arg = new Dictionary<string, string> () {
+					{"path", path},
+					{"perfect", perfect.ToString()},
+					{"good", good.ToString()},
+					{"bad", bad.ToString()},
+					{"miss", miss.ToString()},
+					{"score", score.ToString()},
+					{"resolution", resolution.ToString()},
+				};
+				SceneInfo.setParameters (arg);
 				SceneManager.LoadScene ("Score");
 			}
 		}

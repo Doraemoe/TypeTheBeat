@@ -5,6 +5,8 @@ using UnityEngine;
 
 public static class SceneInfo {
 
+	//static Dictionary<string, string> parameters = new Dictionary<string, string> ();
+
 	static Dictionary<string, string> parameters = new Dictionary<string, string> (){
 		{"path", Application.streamingAssetsPath + "/Songs/Test"},
 		{"resolution", "2205"},

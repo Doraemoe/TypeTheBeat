@@ -345,7 +345,7 @@ public class EditorController : MonoBehaviour {
 
 			writeMetaXML (path[0] + "meta.xml");
 
-			File.Copy (songLocation, path [0] + "song.ogg");
+			File.Copy (songLocation, path [0] + "song.ogg", true);
 		}
 	}
 
