@@ -102,6 +102,7 @@ public class PlayController : MonoBehaviour {
 
 			var pos1 = this.transform.position;
 			pos1.x -= (Time.deltaTime) * speed;
+			//Debug.Log (Time.deltaTime * speed);
 			//this.transform.position = pos1;
 
 
@@ -109,7 +110,7 @@ public class PlayController : MonoBehaviour {
 			var pos = this.transform.position;
 			pos.x = positionImg.transform.position.x - current * 0.1f * speedMulti;
 			this.transform.position = pos;
-			Debug.Log("error: " + (pos1.x - pos.x));
+			//Debug.Log("error: " + (pos1.x - pos.x));
 
 		} else {
 			var pos = this.transform.position;
