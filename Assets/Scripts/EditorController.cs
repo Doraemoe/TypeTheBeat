@@ -339,7 +339,9 @@ public class EditorController : MonoBehaviour {
 			var sr = File.CreateText(path[0] + "song.notemap");
 			for (int i = 0; i < notes.Length; i++) {
 				sr.WriteLine (notes [i].name);
-				sr.WriteLine (notes [i].transform.position.x - instantiateWaveController.transform.position.x);
+				sr.WriteLine (notes[i].transform.localPosition.x);
+				//Debug.Log (notes [i].transform.position.x - instantiateWaveController.transform.position.x);
+				//Debug.Log (notes[i].transform.localPosition.x);
 			}
 			sr.Close();
 

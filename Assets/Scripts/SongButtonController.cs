@@ -41,6 +41,7 @@ public class SongButtonController : MonoBehaviour {
 			Dictionary<string, string> para = new Dictionary<string, string> ();
 			para.Add ("path", path);
 			para.Add ("resolution", resolution);
+			para.Add ("speedMulti", selectionObj.GetComponent<SelectionController>().speedMulti.ToString());
 			SceneInfo.setParameters (para);
 			SceneManager.LoadScene ("Play");
 		}

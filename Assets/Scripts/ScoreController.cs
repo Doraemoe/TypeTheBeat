@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System;
 
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,6 +15,7 @@ public class ScoreController : MonoBehaviour {
 	public Text bad;
 	public Text miss;
 	public Text score;
+	public Text combo;
 
 	string path;
 	// Use this for initialization
@@ -43,6 +45,7 @@ public class ScoreController : MonoBehaviour {
 		bad.text = "Bad: " + SceneInfo.getValueForKey ("bad");
 		miss.text = "Miss: " + SceneInfo.getValueForKey ("miss");
 		score.text = "Score: " + SceneInfo.getValueForKey ("score");
+		combo.text = "Combo:" + Environment.NewLine + SceneInfo.getValueForKey ("combo");
 	}
 
 	public void loadScene(string name) {

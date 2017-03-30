@@ -39,7 +39,8 @@ public class PlayController : MonoBehaviour {
 	float distance;
 	float timeDelay;
 	float speed;
-	float speedMulti = 3f;
+	float speedMulti = 1f;
+	//float positionX;
 	//List<Tuple<string, int>> notemap;
 	AudioSource audioSource;
 	// Use this for initialization
@@ -49,6 +50,8 @@ public class PlayController : MonoBehaviour {
 		var tmp = positionImg.transform.position;
 		tmp.x = Camera.main.ScreenToWorldPoint (Vector3.zero).x + 2;
 		positionImg.transform.position = tmp;
+		speedMulti = float.Parse(SceneInfo.getValueForKey ("speedMulti"));
+		//positionX = tmp.x;
 
 		audioSource = GetComponent<AudioSource> ();
 		//Debug.Log( SceneInfo.getValueForKey ("path"));
@@ -84,6 +87,7 @@ public class PlayController : MonoBehaviour {
 					{"bad", bad.ToString()},
 					{"miss", miss.ToString()},
 					{"score", score.ToString()},
+					{"combo", combo.ToString()},
 					{"resolution", resolution.ToString()},
 				};
 				SceneInfo.setParameters (arg);
@@ -94,16 +98,24 @@ public class PlayController : MonoBehaviour {
 
 	void renderNotes() {
 		//Debug.Log (speed);
-		if (audioSource.timeSamples == 0) {
-			var pos = this.transform.position;
-			pos.x -= (Time.deltaTime) * speed;
-			this.transform.position = pos;
-		} else {
-			int current = audioSource.timeSamples / resolution;
+		if (audioSource.timeSamples != 0) {
 
+			var pos1 = this.transform.position;
+			pos1.x -= (Time.deltaTime) * speed;
+			//this.transform.position = pos1;
+
+
+			int current = audioSource.timeSamples / resolution;
 			var pos = this.transform.position;
 			pos.x = positionImg.transform.position.x - current * 0.1f * speedMulti;
 			this.transform.position = pos;
+			Debug.Log("error: " + (pos1.x - pos.x));
+
+		} else {
+			var pos = this.transform.position;
+			pos.x -= (Time.deltaTime) * speed;
+			this.transform.position = pos;
+
 		}
 
 		//var pos = this.transform.position;
@@ -168,103 +180,108 @@ public class PlayController : MonoBehaviour {
 		//Debug.Log (audioSource.clip.frequency);
 
 		timeDelay = distance * 10f * resolution / audioSource.clip.frequency / speedMulti;
-		//Debug.Log (timeDelay);
-
+		//Debug.Log ("delay" + timeDelay);
+		//Debug.Log ("dis" + distance);
 		speed = distance / timeDelay;
-		//Debug.Log (speed);
+		//Debug.Log ("speedc " + ((float)audioSource.clip.frequency / (10f * resolution * speedMulti)));
 		audioSource.PlayDelayed (timeDelay);
 		played = true;
 		//audioSource.PlayDelayed (5);
 	}
 
-	void prepareNote(string name, float loation) {
+	void prepareNote(string name, float location) {
 
+		float value = location * speedMulti;
 
-
-
-		float value = loation * speedMulti;
-
-			if(name == "A") { 
-				GameObject a = (GameObject)Instantiate (noteA);
-				a.layer = LayerMask.NameToLayer ("Background Image");
-				a.transform.parent = this.transform;
-				var tmp = this.transform.position;
-				//tmp.x += entry.Value; 
-				tmp.x += value; 
-				tmp.y += a.transform.position.y;
-				a.transform.position = tmp;
-				a.name = "A";
-			} else if (name == "S") { 
-				GameObject s = (GameObject)Instantiate (noteS);
-				s.layer = LayerMask.NameToLayer ("Background Image");
-				s.transform.parent = this.transform;
-				var tmp = this.transform.position;
-				//tmp.x += entry.Value; 
-				tmp.x += value;
-				tmp.y += s.transform.position.y;
-				s.transform.position = tmp;
-				s.name = "S";
-			} else if (name == "D") { 
-				GameObject d = (GameObject)Instantiate (noteD);
-				d.layer = LayerMask.NameToLayer ("Background Image");
-				d.transform.parent = this.transform;
-				var tmp = this.transform.position;
-				//tmp.x += entry.Value; 
-				tmp.x += value;
-				tmp.y += d.transform.position.y;
-				d.transform.position = tmp;
-				d.name = "D";
-			} else if (name == "F") { 
-				GameObject f = (GameObject)Instantiate (noteF);
-				f.layer = LayerMask.NameToLayer ("Background Image");
-				f.transform.parent = this.transform;
-				var tmp = this.transform.position;
-				//tmp.x += entry.Value; 
-				tmp.x += value;
-				tmp.y += f.transform.position.y;
-				f.transform.position = tmp;
-				f.name = "F";
-			} else if (name == "J") { 
-				GameObject j = (GameObject)Instantiate (noteJ);
-				j.layer = LayerMask.NameToLayer ("Background Image");
-				j.transform.parent = this.transform;
-				var tmp = this.transform.position;
-				//tmp.x += entry.Value; 
-				tmp.x += value;
-				tmp.y += j.transform.position.y;
-				j.transform.position = tmp;
-				j.name = "J";
-			} else if (name == "K") { 
-				GameObject k = (GameObject)Instantiate (noteK);
-				k.layer = LayerMask.NameToLayer ("Background Image");
-				k.transform.parent = this.transform;
-				var tmp = this.transform.position;
-				//tmp.x += entry.Value; 
-				tmp.x += value;
-				tmp.y += k.transform.position.y;
-				k.transform.position = tmp;
-				k.name = "K";
-			} else if (name == "L") { 
-				GameObject l = (GameObject)Instantiate (noteL);
-				l.layer = LayerMask.NameToLayer ("Background Image");
-				l.transform.parent = this.transform;
-				var tmp = this.transform.position;
-				//tmp.x += entry.Value; 
-				tmp.x += value;
-				tmp.y += l.transform.position.y;
-				l.transform.position = tmp;
-				l.name = "L";
-			} else if (name == "SC") { 
-				GameObject sc = (GameObject)Instantiate (noteSC);
-				sc.layer = LayerMask.NameToLayer ("Background Image");
-				sc.transform.parent = this.transform;
-				var tmp = this.transform.position;
-				//tmp.x += entry.Value; 
-				tmp.x += value;
-				tmp.y += sc.transform.position.y;
-				sc.transform.position = tmp;
-				sc.name = "SC";
-			}
+		if(name == "A") { 
+			GameObject a = (GameObject)Instantiate (noteA);
+			a.layer = LayerMask.NameToLayer ("Background Image");
+			a.transform.parent = this.transform;
+			var tmp = a.transform.localPosition;
+			//tmp.x += entry.Value; 
+			tmp.x = value; 
+			tmp.y = a.transform.position.y;
+			tmp.z = 0;
+			a.transform.localPosition = tmp;
+			a.name = "A";
+		} else if (name == "S") { 
+			GameObject s = (GameObject)Instantiate (noteS);
+			s.layer = LayerMask.NameToLayer ("Background Image");
+			s.transform.parent = this.transform;
+			var tmp = s.transform.localPosition;
+			//tmp.x += entry.Value; 
+			tmp.x = value;
+			tmp.y = s.transform.position.y;
+			tmp.z = 0;
+			s.transform.localPosition = tmp;
+			s.name = "S";
+		} else if (name == "D") { 
+			GameObject d = (GameObject)Instantiate (noteD);
+			d.layer = LayerMask.NameToLayer ("Background Image");
+			d.transform.parent = this.transform;
+			var tmp = d.transform.localPosition;
+			//tmp.x += entry.Value; 
+			tmp.x = value;
+			tmp.y = d.transform.position.y;
+			tmp.z = 0;
+			d.transform.localPosition = tmp;
+			d.name = "D";
+		} else if (name == "F") { 
+			GameObject f = (GameObject)Instantiate (noteF);
+			f.layer = LayerMask.NameToLayer ("Background Image");
+			f.transform.parent = this.transform;
+			var tmp = f.transform.localPosition;
+			//tmp.x += entry.Value; 
+			tmp.x = value;
+			tmp.y = f.transform.position.y;
+			tmp.z = 0;
+			f.transform.localPosition = tmp;
+			f.name = "F";
+		} else if (name == "J") { 
+			GameObject j = (GameObject)Instantiate (noteJ);
+			j.layer = LayerMask.NameToLayer ("Background Image");
+			j.transform.parent = this.transform;
+			var tmp = j.transform.localPosition;
+			//tmp.x += entry.Value; 
+			tmp.x = value;
+			tmp.y = j.transform.position.y;
+			tmp.z = 0;
+			j.transform.localPosition = tmp;
+			j.name = "J";
+		} else if (name == "K") { 
+			GameObject k = (GameObject)Instantiate (noteK);
+			k.layer = LayerMask.NameToLayer ("Background Image");
+			k.transform.parent = this.transform;
+			var tmp = k.transform.localPosition;
+			//tmp.x += entry.Value; 
+			tmp.x = value;
+			tmp.y = k.transform.position.y;
+			tmp.z = 0;
+			k.transform.localPosition = tmp;
+			k.name = "K";
+		} else if (name == "L") { 
+			GameObject l = (GameObject)Instantiate (noteL);
+			l.layer = LayerMask.NameToLayer ("Background Image");
+			l.transform.parent = this.transform;
+			var tmp = l.transform.localPosition;
+			//tmp.x += entry.Value; 
+			tmp.x = value;
+			tmp.y = l.transform.position.y;
+			tmp.z = 0;
+			l.transform.localPosition = tmp;
+			l.name = "L";
+		} else if (name == "SC") { 
+			GameObject sc = (GameObject)Instantiate (noteSC);
+			sc.layer = LayerMask.NameToLayer ("Background Image");
+			sc.transform.parent = this.transform;
+			var tmp = sc.transform.localPosition;
+			//tmp.x += entry.Value; 
+			tmp.x = value;
+			tmp.y = sc.transform.position.y;
+			tmp.z = 0;
+			sc.transform.localPosition = tmp;
+			sc.name = "SC";
+		}
 
 	}
 

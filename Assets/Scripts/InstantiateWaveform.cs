@@ -158,71 +158,71 @@ public class InstantiateWaveform : MonoBehaviour {
 		}
 	}
 
-	public void drawNoteWithPosition(string note, float offset) {
+	public void drawNoteWithPosition(string note, float localPosition) {
 		if(note == "A") { 
 			GameObject a = (GameObject)Instantiate (noteA);
 			a.transform.parent = this.transform;
-			var tmp = this.transform.position;
-			tmp.x += offset;
-			tmp.y = a.transform.position.y;
-			a.transform.position = tmp;
+			var tmp = a.transform.localPosition;
+			tmp.x = localPosition;
+			//tmp.y = a.transform.position.y;
+			a.transform.localPosition = tmp;
 			a.name = "A";
 			//Debug.Log (this.transform.position.x);
 		} else if (note == "S") { 
 			GameObject s = (GameObject)Instantiate (noteS);
 			s.transform.parent = this.transform;
-			var tmp = this.transform.position;
-			tmp.x += offset; 
-			tmp.y = s.transform.position.y;
-			s.transform.position = tmp;
+			var tmp = s.transform.localPosition;
+			tmp.x = localPosition; 
+			//tmp.y = s.transform.position.y;
+			s.transform.localPosition = tmp;
 			s.name = "S";
 		} else if (note == "D") { 
 			GameObject d = (GameObject)Instantiate (noteD);
 			d.transform.parent = this.transform;
-			var tmp = this.transform.position;
-			tmp.x += offset; 
-			tmp.y = d.transform.position.y;
-			d.transform.position = tmp;
+			var tmp = d.transform.localPosition;
+			tmp.x = localPosition; 
+			//tmp.y = d.transform.position.y;
+			d.transform.localPosition = tmp;
 			d.name = "D";
 		} else if (note == "F") { 
 			GameObject f = (GameObject)Instantiate (noteF);
 			f.transform.parent = this.transform;
-			var tmp = this.transform.position;
-			tmp.x += offset; 
-			tmp.y = f.transform.position.y;
-			f.transform.position = tmp;
+			var tmp = f.transform.localPosition;
+			tmp.x = localPosition; 
+			//tmp.y = f.transform.position.y;
+			f.transform.localPosition = tmp;
 			f.name = "F";
 		} else if (note == "J") { 
 			GameObject j = (GameObject)Instantiate (noteJ);
 			j.transform.parent = this.transform;
-			var tmp = this.transform.position;
-			tmp.x += offset; 
-			tmp.y = j.transform.position.y;
-			j.transform.position = tmp;
+			var tmp = j.transform.localPosition;
+			tmp.x = localPosition; 
+			//tmp.y = j.transform.position.y;
+			j.transform.localPosition = tmp;
 			j.name = "J";
 		} else if (note == "K") { 
 			GameObject k = (GameObject)Instantiate (noteK);
 			k.transform.parent = this.transform;
-			var tmp = this.transform.position;
-			tmp.x += offset; 
-			tmp.y = k.transform.position.y;
-			k.transform.position = tmp;
+			var tmp = k.transform.localPosition;
+			tmp.x = localPosition; 
+			//tmp.y = k.transform.position.y;
+			k.transform.localPosition = tmp;
 			k.name = "K";
 		} else if (note == "L") { 
 			GameObject l = (GameObject)Instantiate (noteL);
 			l.transform.parent = this.transform;
-			var tmp = this.transform.position;
-			tmp.x += offset; 
-			tmp.y = l.transform.position.y;
-			l.transform.position = tmp;
+			var tmp = l.transform.localPosition;
+			tmp.x = localPosition; 
+			//tmp.y = l.transform.position.y;
+			l.transform.localPosition = tmp;
 			l.name = "L";
 		} else if (note == "SC") { 
 			GameObject sc = (GameObject)Instantiate (noteSC);
 			sc.transform.parent = this.transform;
-			var tmp = this.transform.position;
-			tmp.x += offset; 
-			tmp.y = sc.transform.position.y;
-			sc.transform.position = tmp;
+			var tmp = sc.transform.position;
+			tmp.x = localPosition; 
+			//tmp.y = sc.transform.position.y;
+			sc.transform.localPosition = tmp;
 			sc.name = "SC";
 		}
 	}

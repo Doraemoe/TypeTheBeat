@@ -2,10 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class SelectionController : MonoBehaviour {
 
 	public GameObject lastSelected;
+	public Canvas optionCanvas;
+	public Text speedMultiTxt;
+	public float speedMulti = 1f;
+	public Slider slider;
 
 	AudioSource audioSource;
 
@@ -37,5 +42,20 @@ public class SelectionController : MonoBehaviour {
 		audioSource.clip = audioLocation.GetAudioClip (false, false);
 		audioSource.Play ();
 
+	}
+
+	public void option() {
+		optionCanvas.gameObject.SetActive (true);
+	}
+
+	public void updateValue() {
+		speedMulti = slider.value;
+		speedMulti = Mathf.Round(speedMulti * 10f) / 10f;
+
+		speedMultiTxt.text = speedMulti.ToString();
+	}
+
+	public void closeOption() {
+		optionCanvas.gameObject.SetActive (false);
 	}
 }
