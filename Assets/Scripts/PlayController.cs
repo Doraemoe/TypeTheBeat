@@ -39,7 +39,7 @@ public class PlayController : MonoBehaviour {
 	float distance;
 	float timeDelay;
 	float speed;
-	float speedMulti = 1f;
+	float speedMulti = 3f;
 	//float positionX;
 	//List<Tuple<string, int>> notemap;
 	AudioSource audioSource;
@@ -106,10 +106,13 @@ public class PlayController : MonoBehaviour {
 			//this.transform.position = pos1;
 
 
-			int current = audioSource.timeSamples / resolution;
+			float current = (float)audioSource.timeSamples / resolution;
+			//Debug.Log ("sample: " + audioSource.timeSamples);
+			//Debug.Log ("current: " + current);
 			var pos = this.transform.position;
 			pos.x = positionImg.transform.position.x - current * 0.1f * speedMulti;
 			this.transform.position = pos;
+			//Debug.Log ("pos x " + pos.x);
 			//Debug.Log("error: " + (pos1.x - pos.x));
 
 		} else {
