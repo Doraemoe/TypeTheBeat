@@ -118,10 +118,10 @@ public class PlayController : MonoBehaviour {
 				this.transform.position = pos;
 				//Debug.Log ("not");
 			} else {
-				var pos1 = this.transform.position;
-				pos1.x -= (Time.deltaTime) * speed;
+				//var pos1 = this.transform.position;
+				pos.x -= (Time.deltaTime) * speed;
 				//Debug.Log ("here" + Time.deltaTime * speed);
-				this.transform.position = pos1;
+				this.transform.position = pos;
 
 			}
 

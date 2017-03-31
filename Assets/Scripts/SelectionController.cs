@@ -9,9 +9,10 @@ public class SelectionController : MonoBehaviour {
 	public GameObject lastSelected;
 	public Canvas optionCanvas;
 	public Text speedMultiTxt;
-	public float speedMulti = 3f;
 	public Slider slider;
 
+
+	float speedMulti = 3f;
 	AudioSource audioSource;
 
 	// Use this for initialization
@@ -22,7 +23,9 @@ public class SelectionController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+		if (Input.GetKeyDown (KeyCode.Escape)) {
+			SceneManager.LoadScene ("Menu");
+		}
 	}
 
 	public void LoadScene(string sceneName) {
