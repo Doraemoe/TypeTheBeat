@@ -56,6 +56,7 @@ public class ScoreController : MonoBehaviour {
 		Dictionary<string, string> par = new Dictionary<string, string> () {
 			{"path", path},
 			{"resolution", SceneInfo.getValueForKey("resolution")},
+			{"speedMulti", SceneInfo.getValueForKey("speedMulti")},
 		};
 		SceneInfo.setParameters (par);
 		SceneManager.LoadScene ("Play");

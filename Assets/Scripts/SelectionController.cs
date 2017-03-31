@@ -9,7 +9,7 @@ public class SelectionController : MonoBehaviour {
 	public GameObject lastSelected;
 	public Canvas optionCanvas;
 	public Text speedMultiTxt;
-	public float speedMulti = 1f;
+	public float speedMulti = 3f;
 	public Slider slider;
 
 	AudioSource audioSource;
@@ -17,6 +17,7 @@ public class SelectionController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		audioSource = GetComponent<AudioSource> ();
+		speedMultiTxt.text = slider.value.ToString();
 	}
 	
 	// Update is called once per frame
