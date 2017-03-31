@@ -36,6 +36,7 @@ public class PlayController : MonoBehaviour {
 	int resolution;
 	int score = 0;
 	int combo = 0;
+	int maxCombo = 0;
 	float distance;
 	float timeDelay;
 	float speed;
@@ -81,6 +82,9 @@ public class PlayController : MonoBehaviour {
 			renderNotes ();
 		} else {
 			if (!paused && played) {
+				if (combo >= maxCombo) {
+					maxCombo = combo;
+				}
 				Dictionary<string, string> arg = new Dictionary<string, string> () {
 					{"path", path},
 					{"perfect", perfect.ToString()},
@@ -88,7 +92,7 @@ public class PlayController : MonoBehaviour {
 					{"bad", bad.ToString()},
 					{"miss", miss.ToString()},
 					{"score", score.ToString()},
-					{"combo", combo.ToString()},
+					{"combo", maxCombo.ToString()},
 					{"resolution", resolution.ToString()},
 					{"speedMulti", speedMulti.ToString()},
 				};
@@ -362,6 +366,9 @@ public class PlayController : MonoBehaviour {
 
 	public void increaseBad() {
 		this.bad++;
+		if (combo >= maxCombo) {
+			maxCombo = combo;
+		}
 		this.combo = 0;
 		score += 30;
 		scoreTxt.text = score.ToString();
@@ -369,6 +376,9 @@ public class PlayController : MonoBehaviour {
 
 	public void increaseMiss() {
 		this.miss++;
+		if (combo >= maxCombo) {
+			maxCombo = combo;
+		}
 		this.combo = 0;
 	}
 }
