@@ -13,6 +13,7 @@ public class InstantiateWaveform : MonoBehaviour {
 	public GameObject noteK;
 	public GameObject noteL;
 	public GameObject noteSC;
+	public GameObject centerInd;
 	public EditorController editorCtrl;
 
 	GameObject[] waveFormGraph;
@@ -121,109 +122,87 @@ public class InstantiateWaveform : MonoBehaviour {
 		}
 	}
 
+
+
 	public void drawNote(string note) {
 		if(note == "A") { 
 			GameObject a = (GameObject)Instantiate (noteA);
-			a.transform.parent = this.transform;
-			a.name = "A";
-			//Debug.Log (this.transform.position.x);
+			noteSetup (a, "A", 0f);
 		} else if (note == "S") { 
 			GameObject s = (GameObject)Instantiate (noteS);
-			s.transform.parent = this.transform;
-			s.name = "S";
+			noteSetup (s, "S", 0.8f);
 		} else if (note == "D") { 
 			GameObject d = (GameObject)Instantiate (noteD);
-			d.transform.parent = this.transform;
-			d.name = "D";
+			noteSetup (d, "D", 1.6f);
 		} else if (note == "F") { 
 			GameObject f = (GameObject)Instantiate (noteF);
-			f.transform.parent = this.transform;
-			f.name = "F";
+			noteSetup (f, "F", 2.4f);
 		} else if (note == "J") { 
 			GameObject j = (GameObject)Instantiate (noteJ);
-			j.transform.parent = this.transform;
-			j.name = "J";
+			noteSetup (j, "J", 0.3f);
 		} else if (note == "K") { 
 			GameObject k = (GameObject)Instantiate (noteK);
-			k.transform.parent = this.transform;
-			k.name = "K";
+			noteSetup (k, "K", 1.3f);
 		} else if (note == "L") { 
 			GameObject l = (GameObject)Instantiate (noteL);
-			l.transform.parent = this.transform;
-			l.name = "L";
+			noteSetup (l, "L", 1.9f);
 		} else if (note == "SC") { 
 			GameObject sc = (GameObject)Instantiate (noteSC);
-			sc.transform.parent = this.transform;
-			sc.name = "SC";
+			noteSetup (sc, "SC", 2.8f);
 		}
+	}
+
+	void noteSetup(GameObject note, string name, float positionY) {
+		note.transform.parent = this.transform;
+		note.name = name;
+
+		GameObject center = (GameObject)Instantiate (centerInd);
+		center.transform.position += Vector3.down * positionY;
+		center.transform.SetParent (note.transform, false);
+	}
+
+	void noteSetup(GameObject note, string name, float positionY, float positionX) {
+		note.transform.parent = this.transform;
+		var tmp = note.transform.localPosition;
+		tmp.x = positionX;
+		note.transform.localPosition = tmp;
+		note.name = name;
+
+		GameObject center = (GameObject)Instantiate (centerInd);
+		center.transform.position += Vector3.down * positionY;
+		center.transform.SetParent (note.transform, false);
+		//center.transform.localPosition = center.transform.position;
 	}
 
 	public void drawNoteWithPosition(string note, float localPosition) {
 		if(note == "A") { 
 			GameObject a = (GameObject)Instantiate (noteA);
-			a.transform.parent = this.transform;
-			var tmp = a.transform.localPosition;
-			tmp.x = localPosition;
-			//tmp.y = a.transform.position.y;
-			a.transform.localPosition = tmp;
-			a.name = "A";
-			//Debug.Log (this.transform.position.x);
+			noteSetup (a, "A", 0f, localPosition);
+
 		} else if (note == "S") { 
 			GameObject s = (GameObject)Instantiate (noteS);
-			s.transform.parent = this.transform;
-			var tmp = s.transform.localPosition;
-			tmp.x = localPosition; 
-			//tmp.y = s.transform.position.y;
-			s.transform.localPosition = tmp;
-			s.name = "S";
+			noteSetup (s, "S", 0.8f, localPosition);
 		} else if (note == "D") { 
 			GameObject d = (GameObject)Instantiate (noteD);
-			d.transform.parent = this.transform;
-			var tmp = d.transform.localPosition;
-			tmp.x = localPosition; 
-			//tmp.y = d.transform.position.y;
-			d.transform.localPosition = tmp;
-			d.name = "D";
+			noteSetup (d, "D", 1.6f, localPosition);
 		} else if (note == "F") { 
 			GameObject f = (GameObject)Instantiate (noteF);
-			f.transform.parent = this.transform;
-			var tmp = f.transform.localPosition;
-			tmp.x = localPosition; 
-			//tmp.y = f.transform.position.y;
-			f.transform.localPosition = tmp;
-			f.name = "F";
+			noteSetup (f, "F", 2.4f, localPosition);
+
 		} else if (note == "J") { 
 			GameObject j = (GameObject)Instantiate (noteJ);
-			j.transform.parent = this.transform;
-			var tmp = j.transform.localPosition;
-			tmp.x = localPosition; 
-			//tmp.y = j.transform.position.y;
-			j.transform.localPosition = tmp;
-			j.name = "J";
+			noteSetup (j, "J", 0.3f, localPosition);
+
 		} else if (note == "K") { 
 			GameObject k = (GameObject)Instantiate (noteK);
-			k.transform.parent = this.transform;
-			var tmp = k.transform.localPosition;
-			tmp.x = localPosition; 
-			//tmp.y = k.transform.position.y;
-			k.transform.localPosition = tmp;
-			k.name = "K";
+			noteSetup (k, "K", 1.3f, localPosition);
 		} else if (note == "L") { 
 			GameObject l = (GameObject)Instantiate (noteL);
-			l.transform.parent = this.transform;
-			var tmp = l.transform.localPosition;
-			tmp.x = localPosition; 
-			//tmp.y = l.transform.position.y;
-			l.transform.localPosition = tmp;
-			l.name = "L";
+			noteSetup (l, "L", 1.9f, localPosition);
+
 		} else if (note == "SC") { 
 			GameObject sc = (GameObject)Instantiate (noteSC);
-			sc.transform.parent = this.transform;
-			var tmp = sc.transform.position;
-			tmp.x = localPosition; 
-			//tmp.y = sc.transform.position.y;
-			sc.transform.localPosition = tmp;
-			sc.name = "SC";
+			noteSetup (sc, "SC", 2.8f, localPosition);
 		}
 	}
 		

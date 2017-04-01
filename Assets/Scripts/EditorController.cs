@@ -32,7 +32,7 @@ public class EditorController : MonoBehaviour {
 	float originalPositionX;
 	float mouseX;
 	AudioSource audioSource;
-	int resolution = 20;
+	int resolution;
 	float[] samples;
 	float waveControllerX;
 	float max = 0;
@@ -53,8 +53,7 @@ public class EditorController : MonoBehaviour {
 		//select note
 		if (Input.GetMouseButtonDown (0)) {
 			Vector2 ray = new Vector2 (Camera.main.ScreenToWorldPoint (Input.mousePosition).x, Camera.main.ScreenToWorldPoint (Input.mousePosition).y);
-
-			RaycastHit2D hit = Physics2D.Raycast (ray, Vector2.zero, 0f);
+			RaycastHit2D hit = Physics2D.Raycast (ray, Vector2.zero);
 			if (hit) {
 				clearColor ();
 				if (hit.transform.gameObject.tag == "Note") {
@@ -195,9 +194,9 @@ public class EditorController : MonoBehaviour {
 
 	void generateSoundWave() {
 		max = 0;
-		resolution = 20;
+		//resolution = 20;
 
-		resolution = audioSource.clip.frequency / resolution;
+		resolution = audioSource.clip.frequency / Constants.kSamplePerSecond;
 		samples = new float[audioSource.clip.samples * audioSource.clip.channels];
 		audioSource.clip.GetData (samples, 0);
 
@@ -272,7 +271,7 @@ public class EditorController : MonoBehaviour {
 
 	void PlayMusic() {
 
-		int current = audioSource.timeSamples / resolution;
+		float current = audioSource.timeSamples / resolution;
 		//current *= audioSource.clip.channels;
 		instantiateWaveController.transform.position = Vector3.left * current * 0.1f + Vector3.up * 1.2f;
 		var currentPositionX = Camera.main.WorldToScreenPoint(instantiateWaveController.transform.position).x;

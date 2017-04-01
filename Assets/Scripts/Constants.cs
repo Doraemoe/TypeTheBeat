@@ -5,4 +5,5 @@ public static class Constants {
 
 	public const int kLeft = 1;
 	public const int kRight = 0;
+	public const int kSamplePerSecond = 20;
 }
