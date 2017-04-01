@@ -53,12 +53,11 @@ public class EditorController : MonoBehaviour {
 		//select note
 		if (Input.GetMouseButtonDown (0)) {
 			Vector2 ray = new Vector2 (Camera.main.ScreenToWorldPoint (Input.mousePosition).x, Camera.main.ScreenToWorldPoint (Input.mousePosition).y);
-			RaycastHit2D[] hits = Physics2D.RaycastAll (ray, Vector2.zero, Mathf.Infinity, Physics.DefaultRaycastLayers, -Mathf.Infinity, 0);
+			RaycastHit2D[] hits = Physics2D.RaycastAll (ray, Vector2.zero, Mathf.Infinity, Physics2D.DefaultRaycastLayers, -Mathf.Infinity, 0);
 
 			if (hits.Length != 0) {
 
 				foreach (var hit in hits) {
-					//Debug.Log (hit.transform.gameObject.name);
 					if (selectedObject != null &&
 					    selectedObject.GetInstanceID () == hit.transform.gameObject.GetInstanceID ()) {
 						continue;
@@ -77,21 +76,6 @@ public class EditorController : MonoBehaviour {
 		}
 
 		if (audioSource.isPlaying) {
-			/*
-			for (int i = 0; i < waveForm.Length; i++) {
-				Vector3 sv = new Vector3 (i * 0.04f, waveForm [i] * 50, 0);
-				Vector3 ev = new Vector3 (i * 0.04f, - waveForm [i] * 50, 0);
-
-				Debug.DrawLine (sv, ev, Color.yellow);
-			}
-
-			int current = audioSource.timeSamples / resolution;
-			current *= audioSource.clip.channels;
-
-			Vector3 c = new Vector3 (current * 0.04f, 0, 0);
-
-			Debug.DrawLine (c, c + Vector3.up * 50, Color.white);
- 			*/
 			this.PlayMusic ();
 		} else {
 			playPauseTxt.text = "Play";
@@ -196,13 +180,6 @@ public class EditorController : MonoBehaviour {
 			new ExtensionFilter("Music Files", "ogg"),
 		};
 
-		/*
-		var path = EditorUtility.OpenFilePanel(
-			"Open Music",
-			System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop),
-			"ogg");
-		*/
-
 		var path = StandaloneFileBrowser.OpenFilePanel(
 			"Open File", 
 			System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop), 
@@ -230,13 +207,10 @@ public class EditorController : MonoBehaviour {
 
 	void generateSoundWave() {
 		max = 0;
-		//resolution = 20;
 
 		resolution = audioSource.clip.frequency / Constants.kSamplePerSecond;
 		samples = new float[audioSource.clip.samples * audioSource.clip.channels];
 		audioSource.clip.GetData (samples, 0);
-
-		//waveForm = new float[(samples.Length/resolution)];
 
 		waveForm = new float[audioSource.clip.samples / resolution];
 
@@ -287,20 +261,17 @@ public class EditorController : MonoBehaviour {
 			var currentPosition = Camera.main.ScreenToWorldPoint (Input.mousePosition);
 			var offset = startPosition.x - currentPosition.x;
 			var pixOffset = mouseX - Input.mousePosition.x;
-			//Debug.Log (offset);
 			instantiateWaveController.transform.position = new Vector3 (instantiateWaveController.transform.position.x - offset, this.transform.position.y, 0f);
 			startPosition = currentPosition;
 
 			if (pixOffset > 10) {
-				//int number = (int)pixOffset / 10 + 1;
 				mouseX = Input.mousePosition.x;
 				instantiateWaveController.GetComponent<InstantiateWaveform> ().redraw (Constants.kLeft);
 			} else if (pixOffset < -10) {
-				//int number = (int)pixOffset / 10;
 				mouseX = Input.mousePosition.x;
 				instantiateWaveController.GetComponent<InstantiateWaveform> ().redraw (Constants.kRight);
 			} else {
-				//Debug.Log ("no");
+				
 			}
 		}
 	}
@@ -308,12 +279,10 @@ public class EditorController : MonoBehaviour {
 	void PlayMusic() {
 
 		float current = audioSource.timeSamples / resolution;
-		//current *= audioSource.clip.channels;
 		instantiateWaveController.transform.position = Vector3.left * current * 0.1f + Vector3.up * 1.2f;
 		var currentPositionX = Camera.main.WorldToScreenPoint(instantiateWaveController.transform.position).x;
 		var pixOffset =  waveControllerX - currentPositionX;
 		if (pixOffset > 10) {
-			//int number = (int)pixOffset / 10;
 			waveControllerX = currentPositionX;
 			instantiateWaveController.GetComponent<InstantiateWaveform> ().redraw (Constants.kLeft);
 		}
@@ -375,8 +344,7 @@ public class EditorController : MonoBehaviour {
 			for (int i = 0; i < notes.Length; i++) {
 				sr.WriteLine (notes [i].name);
 				sr.WriteLine (notes[i].transform.localPosition.x);
-				//Debug.Log (notes [i].transform.position.x - instantiateWaveController.transform.position.x);
-				//Debug.Log (notes[i].transform.localPosition.x);
+
 			}
 			sr.Close();
 
@@ -419,16 +387,6 @@ public class EditorController : MonoBehaviour {
 			System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop),
 			extensions,
 			false);
-
-		//Debug.Log (path[0]);
-
-
-		/*
-		var path = EditorUtility.OpenFilePanel(
-			"Open Notemap",
-			System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop),
-			"notemap");
-		*/
 
 		if (path[0].Length != 0) {
 			

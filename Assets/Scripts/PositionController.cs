@@ -48,20 +48,8 @@ public class PositionController : MonoBehaviour {
 	{
 		if(col.gameObject.tag == "Note")
 		{
-			//size = col.gameObject.transform.position.x;
 
 			currentNotes.Enqueue (col.gameObject);
-
-			/*
-			Debug.Log("in " + col.gameObject.name);
-			Debug.Log("pos " + col.gameObject.transform.position);
-			Debug.Log("mpos " + this.transform.position);
-			BoxCollider2D col2d = GetComponent<BoxCollider2D> ();
-			Debug.Log (col2d.bounds.max);
-			Debug.Log (col2d.bounds.min);
-			Debug.Log(Camera.main.WorldToScreenPoint (col2d.bounds.max));
-			Debug.Log(Camera.main.WorldToScreenPoint (col2d.bounds.min));
-			*/
 
 		}
 	}
@@ -69,20 +57,11 @@ public class PositionController : MonoBehaviour {
 	void OnCollisionExit2D(Collision2D col) {
 		if(col.gameObject.tag == "Note")
 		{
-			//size -= col.gameObject.transform.position.x;
-			//Debug.Log (size);
 				
 			GameObject note = currentNotes.Dequeue ();
 			playCtrl.increaseMiss ();
 
 			changeNoteColor (note);
-
-
-			/*
-			Debug.Log("out " + col.gameObject.name);
-			Debug.Log("pos " + col.gameObject.transform.position);
-			Debug.Log("mpos " + this.transform.position);
-			*/
 
 		}
 	}
@@ -94,7 +73,6 @@ public class PositionController : MonoBehaviour {
 	}
 
 	void verifyInput(string input) {
-		//Debug.Log (input);
 		if (currentNotes.Count != 0) {
 			GameObject note = currentNotes.Dequeue ();
 			if (note.name == input) {

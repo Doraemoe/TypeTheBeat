@@ -27,7 +27,6 @@ public class InstantiateWaveform : MonoBehaviour {
 
 	void OnEnable() {
 		int i;
-		//var waveFormData = editorCtrl.waveForm;
 		waveFormGraph = new GameObject[editorCtrl.waveForm.Length];
 		this.transform.position = new Vector3 (0f, 1.2f, 0f);
 
@@ -39,7 +38,6 @@ public class InstantiateWaveform : MonoBehaviour {
 			}
 		}
 		rightMost = i;
-		//Debug.Log ("rightmost" + i);
 	}
 
 	void OnDisable() {
@@ -61,15 +59,12 @@ public class InstantiateWaveform : MonoBehaviour {
 		insWave.transform.localScale = new Vector3 (1, editorCtrl.waveForm[i] * 30, 1);
 		insWave.transform.parent = this.transform;
 		insWave.name = "wave" + i;
-		//var currentX = this.transform.position.x;
-		//this.transform.position.x = currentX + 10;
 		waveFormGraph [i] = insWave;
 		return Camera.main.WorldToScreenPoint (insWave.transform.position).x;
 
 	}
 
 	public void redraw(int direction) {
-		//Debug.Log (number);
 		if (direction == Constants.kLeft) { //left
 			//generate right
 			int i;
@@ -93,7 +88,6 @@ public class InstantiateWaveform : MonoBehaviour {
 				}
 			}
 			leftMost = i;
-			//Debug.Log ("leftmost " + leftMost);
 		}
 
 		if (direction == Constants.kRight) { //right
@@ -171,7 +165,6 @@ public class InstantiateWaveform : MonoBehaviour {
 		GameObject center = (GameObject)Instantiate (centerInd);
 		center.transform.position += Vector3.down * positionY;
 		center.transform.SetParent (note.transform, false);
-		//center.transform.localPosition = center.transform.position;
 	}
 
 	public void drawNoteWithPosition(string note, float localPosition) {

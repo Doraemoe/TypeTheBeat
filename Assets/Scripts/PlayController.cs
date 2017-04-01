@@ -42,27 +42,21 @@ public class PlayController : MonoBehaviour {
 	float speed;
 	float speedMulti = 3f;
 	float lastPosX = 0f;
-	//float positionX;
-	//List<Tuple<string, int>> notemap;
 	AudioSource audioSource;
-	// Use this for initialization
 
+	// Use this for initialization
 	void Start () {
 
 		var tmp = positionImg.transform.position;
 		tmp.x = Camera.main.ScreenToWorldPoint (Vector3.zero).x + 2;
 		positionImg.transform.position = tmp;
 		speedMulti = float.Parse(SceneInfo.getValueForKey ("speedMulti"));
-		//positionX = tmp.x;
 
 		audioSource = GetComponent<AudioSource> ();
-		//Debug.Log( SceneInfo.getValueForKey ("path"));
 		path = SceneInfo.getValueForKey ("path");
 		resolution = int.Parse(SceneInfo.getValueForKey ("resolution"));
-		//notemap = new Dictionary<string, float>();
 		setDisplay ();
 		loadNotemap ();
-		//prepareNote ();
 
 		StartCoroutine(LoadSongCoroutine ());
 	}
@@ -78,7 +72,6 @@ public class PlayController : MonoBehaviour {
 		}
 
 		if (audioSource.isPlaying) {
-			//Debug.Log(audioSource.timeSamples);
 			renderNotes ();
 		} else {
 			if (!paused && played) {
@@ -103,36 +96,21 @@ public class PlayController : MonoBehaviour {
 	}
 
 	void renderNotes() {
-		//Debug.Log (speed);
 		if (audioSource.timeSamples != 0) {
 
-			//var pos1 = this.transform.position;
-			//pos1.x -= (Time.deltaTime) * speed;
-			//Debug.Log (Time.deltaTime * speed);
-			//this.transform.position = pos1;
-
-
 			float current = (float)audioSource.timeSamples / resolution;
-			//Debug.Log ("sample: " + audioSource.timeSamples);
-			//Debug.Log ("current: " + current);
 			var pos = this.transform.position;
 			pos.x = positionImg.transform.position.x - current * 0.1f * speedMulti;
 
 			if(lastPosX != pos.x) {
 				this.transform.position = pos;
-				//Debug.Log ("not");
 			} else {
-				//var pos1 = this.transform.position;
 				pos.x -= (Time.deltaTime) * speed;
-				//Debug.Log ("here" + Time.deltaTime * speed);
 				this.transform.position = pos;
 
 			}
 
 			lastPosX = this.transform.position.x;
-			//this.transform.position = pos;
-			//Debug.Log ("pos x " + pos.x);
-			//Debug.Log("error: " + (pos1.x - pos.x));
 
 		} else {
 			var pos = this.transform.position;
@@ -140,10 +118,6 @@ public class PlayController : MonoBehaviour {
 			this.transform.position = pos;
 			lastPosX = pos.x;
 		}
-
-		//var pos = this.transform.position;
-		//pos.x -= Time.deltaTime * speed;
-		//this.transform.position = pos;
 	}
 
 	public void goBack () {
@@ -196,20 +170,10 @@ public class PlayController : MonoBehaviour {
 
 		audioSource.clip = audioLocation.GetAudioClip (false, false);
 
-		//Debug.Log (audioSource.clip.frequency);
-
-		//float t = 0f;
-
-		//Debug.Log (audioSource.clip.frequency);
-
 		timeDelay = distance * 10f * resolution / audioSource.clip.frequency / speedMulti;
-		//Debug.Log ("delay" + timeDelay);
-		//Debug.Log ("dis" + distance);
 		speed = distance / timeDelay;
-		//Debug.Log ("speedc " + ((float)audioSource.clip.frequency / (10f * resolution * speedMulti)));
 		audioSource.PlayDelayed (timeDelay);
 		played = true;
-		//audioSource.PlayDelayed (5);
 	}
 
 	void setupNote(GameObject obj, string name, float valueX) {
@@ -230,98 +194,27 @@ public class PlayController : MonoBehaviour {
 		if(name == "A") { 
 			GameObject a = (GameObject)Instantiate (noteA);
 			setupNote (a, "A", value);
-
-			//a.layer = LayerMask.NameToLayer ("Background Image");
-			//a.transform.parent = this.transform;
-			//var tmp = a.transform.localPosition;
-			//tmp.x = value; 
-			//tmp.y = a.transform.position.y;
-			//tmp.z = 0;
-			//a.transform.localPosition = tmp;
-			//a.name = "A";
 		} else if (name == "S") { 
 			GameObject s = (GameObject)Instantiate (noteS);
 			setupNote (s, "S", value);
-
-//			s.layer = LayerMask.NameToLayer ("Background Image");
-//			s.transform.parent = this.transform;
-//			var tmp = s.transform.localPosition;
-//			tmp.x = value;
-//			tmp.y = s.transform.position.y;
-//			tmp.z = 0;
-//			s.transform.localPosition = tmp;
-//			s.name = "S";
 		} else if (name == "D") { 
 			GameObject d = (GameObject)Instantiate (noteD);
 			setupNote (d, "D", value);
-//			d.layer = LayerMask.NameToLayer ("Background Image");
-//			d.transform.parent = this.transform;
-//			var tmp = d.transform.localPosition;
-//			tmp.x = value;
-//			tmp.y = d.transform.position.y;
-//			tmp.z = 0;
-//			d.transform.localPosition = tmp;
-//			d.name = "D";
 		} else if (name == "F") { 
 			GameObject f = (GameObject)Instantiate (noteF);
 			setupNote (f, "F", value);
-//			f.layer = LayerMask.NameToLayer ("Background Image");
-//			f.transform.parent = this.transform;
-//			var tmp = f.transform.localPosition;
-//			//tmp.x += entry.Value; 
-//			tmp.x = value;
-//			tmp.y = f.transform.position.y;
-//			tmp.z = 0;
-//			f.transform.localPosition = tmp;
-//			f.name = "F";
 		} else if (name == "J") { 
 			GameObject j = (GameObject)Instantiate (noteJ);
 			setupNote (j, "J", value);
-//			j.layer = LayerMask.NameToLayer ("Background Image");
-//			j.transform.parent = this.transform;
-//			var tmp = j.transform.localPosition;
-//			//tmp.x += entry.Value; 
-//			tmp.x = value;
-//			tmp.y = j.transform.position.y;
-//			tmp.z = 0;
-//			j.transform.localPosition = tmp;
-//			j.name = "J";
 		} else if (name == "K") { 
 			GameObject k = (GameObject)Instantiate (noteK);
 			setupNote (k, "K", value);
-//			k.layer = LayerMask.NameToLayer ("Background Image");
-//			k.transform.parent = this.transform;
-//			var tmp = k.transform.localPosition;
-//			//tmp.x += entry.Value; 
-//			tmp.x = value;
-//			tmp.y = k.transform.position.y;
-//			tmp.z = 0;
-//			k.transform.localPosition = tmp;
-//			k.name = "K";
 		} else if (name == "L") { 
 			GameObject l = (GameObject)Instantiate (noteL);
 			setupNote (l, "L", value);
-//			l.layer = LayerMask.NameToLayer ("Background Image");
-//			l.transform.parent = this.transform;
-//			var tmp = l.transform.localPosition;
-//			//tmp.x += entry.Value; 
-//			tmp.x = value;
-//			tmp.y = l.transform.position.y;
-//			tmp.z = 0;
-//			l.transform.localPosition = tmp;
-//			l.name = "L";
 		} else if (name == "SC") { 
 			GameObject sc = (GameObject)Instantiate (noteSC);
 			setupNote (sc, "SC", value);
-//			sc.layer = LayerMask.NameToLayer ("Background Image");
-//			sc.transform.parent = this.transform;
-//			var tmp = sc.transform.localPosition;
-//			//tmp.x += entry.Value; 
-//			tmp.x = value;
-//			tmp.y = sc.transform.position.y;
-//			tmp.z = 0;
-//			sc.transform.localPosition = tmp;
-//			sc.name = "SC";
 		}
 
 	}

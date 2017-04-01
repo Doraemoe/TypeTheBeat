@@ -13,16 +13,12 @@ public class ListController : MonoBehaviour {
 		var directories = Directory.GetDirectories(path);
 
 		foreach (var d in directories) {
-			//Debug.Log (d);
-			//Debug.LogError(d);
 
 			XmlDocument doc = new XmlDocument();
 			doc.Load (d + "/meta.xml");
 
 			var nameNode = doc.GetElementsByTagName ("Name");
-			//Debug.Log (nameNode[0].InnerText);
 			var artistNode = doc.GetElementsByTagName ("Artist");
-			//Debug.Log (artistNode[0].InnerText);
 			var resolutionNode = doc.GetElementsByTagName("Resolution");
 
 			generateBtn (nameNode [0].InnerText, artistNode [0].InnerText, d, resolutionNode[0].InnerText);

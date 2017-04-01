@@ -63,20 +63,7 @@ public class SongButtonController : MonoBehaviour {
 
 		RawImage backgroundImg = GameObject.FindGameObjectWithTag ("Background").GetComponent<RawImage>();
 		backgroundImg.texture = tex;
-		/*
-		bg.GetComponent<SpriteRenderer>().sprite = Sprite.Create(tex, new Rect(0,0, tex.width, tex.height), new Vector2(0.5f,0.5f));
 
-		if(Screen.height > tex.height || Screen.width > tex.width) {
-			float sc;
-			if ((float)Screen.height / tex.height > (float)Screen.width / tex.width) {
-				sc = (float)Screen.height / tex.height;
-			} else {
-				sc = (float)Screen.width / tex.width;
-			}
-
-			bg.transform.localScale = new Vector3 (sc, sc, 1f);
-		}
-		*/
 	}
 
 	void playMusic() {
