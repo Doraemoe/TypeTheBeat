@@ -25,6 +25,7 @@ public class EditorController : MonoBehaviour {
 	public Text playPauseTxt;
 	public Text songName;
 	public Text songArtist;
+	public InputField selectedLocation;
 	public InputField nameInput;
 	public InputField artistInput;
 
@@ -45,6 +46,19 @@ public class EditorController : MonoBehaviour {
 	void Start () {
 		audioSource = GetComponent<AudioSource> ();
 
+		selectedLocation.onEndEdit.AddListener(delegate {setSelectedLocalPosition(); });
+
+	}
+
+	void setSelectedLocalPosition() {
+		if(selectedObject == null) {
+			selectedLocation.text = "";
+			return;
+		}
+		var tmp = selectedObject.transform.localPosition;
+		tmp.x = float.Parse(selectedLocation.text);
+		selectedObject.transform.localPosition = tmp;
+
 	}
 	
 	// Update is called once per frame
@@ -53,25 +67,30 @@ public class EditorController : MonoBehaviour {
 		//select note
 		if (Input.GetMouseButtonDown (0)) {
 			Vector2 ray = new Vector2 (Camera.main.ScreenToWorldPoint (Input.mousePosition).x, Camera.main.ScreenToWorldPoint (Input.mousePosition).y);
-			RaycastHit2D[] hits = Physics2D.RaycastAll (ray, Vector2.zero, Mathf.Infinity, Physics2D.DefaultRaycastLayers, -Mathf.Infinity, 0);
+			RaycastHit2D[] hits = Physics2D.RaycastAll (ray, Vector2.zero);
+
 
 			if (hits.Length != 0) {
-
-				foreach (var hit in hits) {
-					if (selectedObject != null &&
-					    selectedObject.GetInstanceID () == hit.transform.gameObject.GetInstanceID ()) {
-						continue;
-					} else {
-						clearColor ();
-						selectedObject = hit.transform.gameObject;
-						var color = selectedObject.GetComponent<Renderer> ().material.color;
-						color.a = 0.8f;
-						selectedObject.GetComponent<Renderer> ().material.color = color;
-						break;
+				if (hits.Length == 1) {
+					clearSelection ();
+				} else {
+					foreach (var hit in hits) {
+						if (hit.transform.gameObject.tag == "GameController") {
+							continue;
+						} else if (selectedObject != null &&
+						   selectedObject.GetInstanceID () == hit.transform.gameObject.GetInstanceID ()) {
+							continue;
+						} else {
+							clearColor ();
+							selectedObject = hit.transform.gameObject;
+							var color = selectedObject.GetComponent<Renderer> ().material.color;
+							color.a = 0.8f;
+							selectedObject.GetComponent<Renderer> ().material.color = color;
+							selectedLocation.text = selectedObject.transform.localPosition.x.ToString ();
+							break;
+						}
 					}
 				}
-			} else {
-				clearSelection ();
 			}
 		}
 
@@ -130,6 +149,7 @@ public class EditorController : MonoBehaviour {
 			return;
 		}
 		selectedObject.transform.localPosition += Vector3.right * 0.01f;
+		selectedLocation.text = selectedObject.transform.localPosition.x.ToString();
 	}
 
 	void moveSelectedLeft() {
@@ -137,6 +157,7 @@ public class EditorController : MonoBehaviour {
 			return;
 		}
 		selectedObject.transform.localPosition += Vector3.left * 0.01f;
+		selectedLocation.text = selectedObject.transform.localPosition.x.ToString();
 	}
 
 	void deleteSelection() {
@@ -148,6 +169,7 @@ public class EditorController : MonoBehaviour {
 			Destroy (selectedObject);
 		}
 
+		selectedLocation.text = "";
 		selectedObject = null;
 	}
 
@@ -158,6 +180,7 @@ public class EditorController : MonoBehaviour {
 
 		clearColor ();
 
+		selectedLocation.text = "";
 		selectedObject = null;
 
 	}
@@ -256,8 +279,7 @@ public class EditorController : MonoBehaviour {
 				playPauseTxt.text = "Play";
 				audioSource.Pause ();
 			}
-
-
+				
 			var currentPosition = Camera.main.ScreenToWorldPoint (Input.mousePosition);
 			var offset = startPosition.x - currentPosition.x;
 			var pixOffset = mouseX - Input.mousePosition.x;

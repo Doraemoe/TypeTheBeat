@@ -19,4 +19,8 @@ public class NoteController : MonoBehaviour {
 	public void setTimestamp(int t) {
 		this.timestamp = t;
 	}
+
+	void OnMouseDrag() { 
+		//Debug.Log ("drag? " + gameObject.name);
+	}
 }
