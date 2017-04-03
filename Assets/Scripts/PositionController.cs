@@ -6,7 +6,7 @@ public class PositionController : MonoBehaviour {
 
 	public PlayController playCtrl;
 
-	Queue<GameObject> currentNotes;
+	public Queue<GameObject> currentNotes;
 
 
 	float size;
@@ -57,47 +57,91 @@ public class PositionController : MonoBehaviour {
 	void OnCollisionExit2D(Collision2D col) {
 		if(col.gameObject.tag == "Note")
 		{
-				
-			GameObject note = currentNotes.Dequeue ();
-			playCtrl.increaseMiss ();
+			if(col.gameObject.GetComponent<NoteController> ().alreadyOut) {
+				if (col.gameObject.GetComponent<NoteController> ().alreadyChecked) {
+					return;
+				} else {
+					missNote (col.gameObject);
+				}
+			}
 
-			changeNoteColor (note);
-
+			if (currentNotes.Count != 0) {
+				GameObject note = currentNotes.Dequeue ();
+				if (note.GetComponent<NoteController> ().alreadyChecked) {
+					return;
+				} else {
+					missNote (note);
+				}
+			}
 		}
 	}
 
 	void changeNoteColor(GameObject note) {
 		var color = note.GetComponent<Renderer> ().material.color;
 		color.a = 0.5f;
-		note.GetComponent<Renderer> ().material.color = color;
+		note.GetComponent<SpriteRenderer> ().material.color = color;
 	}
 
 	void verifyInput(string input) {
 		if (currentNotes.Count != 0) {
+			
 			GameObject note = currentNotes.Dequeue ();
+			note.GetComponent<NoteController> ().alreadyOut = true;
+
 			if (note.name == input) {
-				if (note.transform.position.x >= this.transform.position.x - 0.15
-				    && note.transform.position.x <= this.transform.position.x + 0.15) {
-
-					Destroy (note);
-					playCtrl.increasePerfect ();
-
-				} else if (note.transform.position.x >= this.transform.position.x - 0.35
-				           && note.transform.position.x <= this.transform.position.x + 0.35) {
-					Destroy (note);
-					playCtrl.increaseGood ();
-
-				} else {
-					Destroy (note);
-					playCtrl.increaseBad ();
-
-				}
+				detectAcc (note);
 			} else {
-				note.GetComponent<BoxCollider2D> ().enabled = false;
-				changeNoteColor (note);
-				playCtrl.increaseMiss ();
+				List<GameObject> concurrentNotes = note.GetComponent<NoteController> ().concurrentNotes;
+				if (concurrentNotes.Count > 1) {
+					foreach(GameObject otherNote in concurrentNotes) {
+						checkConcurrent (otherNote, input);
+					}
+				} else {
+					note.GetComponent<NoteController> ().alreadyChecked = true;
+					missNote (note);
+				}
 			}
 
 		}
+	}
+
+
+	void checkConcurrent(GameObject note, string input) {
+		if (note.GetComponent<NoteController> ().alreadyChecked) {
+			return;
+		} 
+
+		if (note.name == input) {
+			detectAcc (note);
+		}
+	}
+
+	void detectAcc(GameObject note) {
+		if (note.transform.position.x >= this.transform.position.x - 0.15
+			&& note.transform.position.x <= this.transform.position.x + 0.15) {
+
+			removeNote (note);
+			playCtrl.increasePerfect ();
+
+		} else if (note.transform.position.x >= this.transform.position.x - 0.35
+			&& note.transform.position.x <= this.transform.position.x + 0.35) {
+			removeNote (note);
+			playCtrl.increaseGood ();
+
+		} else {
+			removeNote (note);
+			playCtrl.increaseBad ();
+
+		}
+	}
+
+	void missNote(GameObject note) {
+		changeNoteColor (note);
+		playCtrl.increaseMiss ();
+	}
+
+	void removeNote(GameObject note) {
+		note.GetComponent<NoteController> ().alreadyChecked = true;
+		note.GetComponent<SpriteRenderer> ().enabled = false;
 	}
 }

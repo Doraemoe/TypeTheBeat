@@ -139,19 +139,35 @@ public class PlayController : MonoBehaviour {
 	}
 
 	void loadNotemap() {
-		string name;
+		string tmp;
+		List<GameObject> concurrentNotes;
+		string[] names;
 		float position;
 
 		var reader = new StreamReader (path + "/song.notemap");
 
 		using (reader) {
 			do {
-				name = reader.ReadLine();
-				if(name != null) {
+				tmp = reader.ReadLine();
+				if(tmp != null) {
+					//concurrent = int.Parse(tmp);
+					//According to the document, if the separator parameter is null or contains no characters, white-space characters are assumed to be the delimiters.
+					names = tmp.Trim().Split(null);
 					position = float.Parse(reader.ReadLine(), CultureInfo.InvariantCulture.NumberFormat);
-					prepareNote(name, position);
+
+					concurrentNotes = new List<GameObject>(names.Length);
+
+					foreach(string name in names) {
+						concurrentNotes.Add(prepareNote(name, position));
+					}
+
+					foreach (GameObject note in concurrentNotes) {
+						note.GetComponent<NoteController>().setConcurrentNotes(concurrentNotes);
+					}
+
+
 				}
-			} while (name != null);
+			} while (tmp != null);
 			reader.Close ();
 		}
 
@@ -160,6 +176,8 @@ public class PlayController : MonoBehaviour {
 		pos.x = rightMostX;
 		this.transform.position = pos;
 		distance = rightMostX - positionImg.transform.position.x;
+
+
 
 	}
 
@@ -187,35 +205,45 @@ public class PlayController : MonoBehaviour {
 		obj.name = name;
 	}
 
-	void prepareNote(string name, float location) {
+	GameObject prepareNote(string name, float location) {
 
 		float value = location * speedMulti;
 
 		if(name == "A") { 
 			GameObject a = (GameObject)Instantiate (noteA);
 			setupNote (a, "A", value);
+			return a;
 		} else if (name == "S") { 
 			GameObject s = (GameObject)Instantiate (noteS);
 			setupNote (s, "S", value);
+			return s;
 		} else if (name == "D") { 
 			GameObject d = (GameObject)Instantiate (noteD);
 			setupNote (d, "D", value);
+			return d;
 		} else if (name == "F") { 
 			GameObject f = (GameObject)Instantiate (noteF);
 			setupNote (f, "F", value);
+			return f;
 		} else if (name == "J") { 
 			GameObject j = (GameObject)Instantiate (noteJ);
 			setupNote (j, "J", value);
+			return j;
 		} else if (name == "K") { 
 			GameObject k = (GameObject)Instantiate (noteK);
 			setupNote (k, "K", value);
+			return k;
 		} else if (name == "L") { 
 			GameObject l = (GameObject)Instantiate (noteL);
 			setupNote (l, "L", value);
+			return l;
 		} else if (name == "SC") { 
 			GameObject sc = (GameObject)Instantiate (noteSC);
 			setupNote (sc, "SC", value);
+			return sc;
 		}
+
+		return null;
 
 	}
 

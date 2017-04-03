@@ -5,6 +5,9 @@ using UnityEngine;
 public class NoteController : MonoBehaviour {
 
 	public int timestamp;
+	public bool alreadyOut = false;
+	public bool alreadyChecked = false;
+	public List<GameObject> concurrentNotes;
 
 	// Use this for initialization
 	void Start () {
@@ -18,6 +21,10 @@ public class NoteController : MonoBehaviour {
 
 	public void setTimestamp(int t) {
 		this.timestamp = t;
+	}
+
+	public void setConcurrentNotes(List<GameObject> con) {
+		concurrentNotes = con;
 	}
 
 	void OnMouseDrag() { 

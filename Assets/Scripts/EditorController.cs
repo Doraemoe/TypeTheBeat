@@ -40,6 +40,7 @@ public class EditorController : MonoBehaviour {
 	float[] notePositions;
 	string[] noteName;
 	string songLocation;
+	Dictionary<float, List<string>> notesData;
 
 
 	// Use this for initialization
@@ -350,7 +351,7 @@ public class EditorController : MonoBehaviour {
 	}
 
 	public void save() {
-		var notes = GameObject.FindGameObjectsWithTag ("Note");
+		
 
 		var path = StandaloneFileBrowser.OpenFolderPanel(
 			"Save to a folder", 
@@ -359,20 +360,59 @@ public class EditorController : MonoBehaviour {
 
 
 		if(path[0].Length != 0) {
+			//var notes = GameObject.FindGameObjectsWithTag ("Note");
+
+
 			path[0] = new System.Uri(path[0]).AbsolutePath; 
 			path[0] = WWW.UnEscapeURL (path[0]);
 
+			collectNotesData();
+
 			var sr = File.CreateText(path[0] + "song.notemap");
+
+			foreach(KeyValuePair<float, List<string>> data in notesData)
+			{
+				//sr.WriteLine (data.Value.Count);
+
+				string names = "";
+				foreach (string name in data.Value) {
+					names += name + " ";
+				}
+				sr.WriteLine (names);
+				sr.WriteLine (data.Key);
+			}
+
+			/*
 			for (int i = 0; i < notes.Length; i++) {
 				sr.WriteLine (notes [i].name);
 				sr.WriteLine (notes[i].transform.localPosition.x);
 
 			}
+			*/
 			sr.Close();
 
 			writeMetaXML (path[0] + "meta.xml");
 
 			File.Copy (songLocation, path [0] + "song.ogg", true);
+		}
+	}
+
+	void collectNotesData() {
+		GameObject[] notes = GameObject.FindGameObjectsWithTag ("Note");
+		notesData = new Dictionary<float, List<string>> (notes.Length);
+
+		foreach(GameObject note in notes) {
+			string name = note.name;
+			float position = note.transform.localPosition.x;
+			if (notesData.ContainsKey (position)) {
+				notesData [position].Add (name);
+			} else {
+				List<string> item = new List<string>(){
+					name,
+				};
+
+				notesData.Add (position, item);
+			}
 		}
 	}
 
@@ -416,8 +456,8 @@ public class EditorController : MonoBehaviour {
 			path[0] = WWW.UnEscapeURL (path[0]);
 
 			if (instantiateWaveController.activeSelf) {
-				string name;
-				float position;
+				string tmp;
+				//float position;
 
 				//clear old notes
 				var notes = GameObject.FindGameObjectsWithTag ("Note");
@@ -431,12 +471,16 @@ public class EditorController : MonoBehaviour {
 
 				using (reader) {
 					do {
-						name = reader.ReadLine();
-						if(name != null) {
-							position = float.Parse(reader.ReadLine(), CultureInfo.InvariantCulture.NumberFormat);
-							instantiateWaveController.GetComponent<InstantiateWaveform> ().drawNoteWithPosition(name, position);
+						tmp = reader.ReadLine();
+						if(tmp != null) {
+							//According to the document, if the separator parameter is null or contains no characters, white-space characters are assumed to be the delimiters.
+							string[] names = tmp.Trim().Split(null);
+							float position = float.Parse(reader.ReadLine(), CultureInfo.InvariantCulture.NumberFormat);
+							foreach(string name in names) {
+								instantiateWaveController.GetComponent<InstantiateWaveform> ().drawNoteWithPosition(name, position);
+							}
 						}
-					} while (name != null);
+					} while (tmp != null);
 					reader.Close ();
 				}
 			}
