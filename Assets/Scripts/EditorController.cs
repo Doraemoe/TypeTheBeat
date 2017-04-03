@@ -101,7 +101,7 @@ public class EditorController : MonoBehaviour {
 			playPauseTxt.text = "Play";
 		}
 
-		if (instantiateWaveController.activeSelf && !nameInput.isFocused && !artistInput.isFocused) {
+		if (instantiateWaveController.activeSelf && !nameInput.isFocused && !artistInput.isFocused && !selectedLocation.isFocused) {
 			if (Input.GetKeyDown (KeyCode.Escape)) {
 				clearSelection ();
 			}
