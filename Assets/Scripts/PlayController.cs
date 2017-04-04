@@ -37,6 +37,7 @@ public class PlayController : MonoBehaviour {
 	int score = 0;
 	int combo = 0;
 	int maxCombo = 0;
+	int samplesDelay;
 	float distance;
 	float timeDelay;
 	float speed;
@@ -72,7 +73,7 @@ public class PlayController : MonoBehaviour {
 		}
 
 		if (audioSource.isPlaying) {
-			renderNotes ();
+			renderNotes();
 		} else {
 			if (!paused && played) {
 				if (combo >= maxCombo) {
@@ -95,7 +96,12 @@ public class PlayController : MonoBehaviour {
 		}
 	}
 
+	/*
 	void renderNotes() {
+		if(audioSource.timeSamples >= samplesDelay) {
+			CDebug.Log("started play");
+		}
+
 		if (audioSource.timeSamples != 0) {
 
 			float current = (float)audioSource.timeSamples / resolution;
@@ -104,6 +110,7 @@ public class PlayController : MonoBehaviour {
 
 			if(lastPosX != pos.x) {
 				this.transform.position = pos;
+				//this.transform.Translate(Vector3.left);
 			} else {
 				pos.x -= (Time.deltaTime) * speed;
 				this.transform.position = pos;
@@ -113,11 +120,36 @@ public class PlayController : MonoBehaviour {
 			lastPosX = this.transform.position.x;
 
 		} else {
-			var pos = this.transform.position;
-			pos.x -= (Time.deltaTime) * speed;
-			this.transform.position = pos;
-			lastPosX = pos.x;
+
+			this.transform.Translate (Vector3.left * speed * Time.deltaTime);
+			//var pos = this.transform.position;
+			//pos.x -= (Time.deltaTime) * speed;
+			//this.transform.position = pos;
+			lastPosX = this.transform.position.x;
 		}
+	}
+	*/
+
+	void renderNotes() {
+		
+		int delta = audioSource.timeSamples - samplesDelay;
+
+		float current = (float)delta / resolution;
+		var pos = this.transform.position;
+		pos.x = positionImg.transform.position.x - current * 0.1f * speedMulti;
+		this.transform.position = pos;
+		/*
+			if (lastPosX != pos.x) {
+				this.transform.position = pos;
+				//this.transform.Translate(Vector3.left);
+			} else {
+				//pos.x -= (Time.deltaTime) * speed;
+				//this.transform.position = pos;
+
+			}
+
+			lastPosX = this.transform.position.x;
+			*/
 	}
 
 	public void goBack () {
@@ -173,14 +205,14 @@ public class PlayController : MonoBehaviour {
 
 		float rightMostX = Camera.main.ScreenToWorldPoint (new Vector3(Screen.width, Screen.height)).x;
 		var pos = this.transform.position;
-		pos.x = rightMostX;
+		pos.x = rightMostX + 2;
 		this.transform.position = pos;
 		distance = rightMostX - positionImg.transform.position.x;
 
 
 
 	}
-
+	/*
 	IEnumerator LoadSongCoroutine() {
 		var audioLocation = new WWW ("file://" + path + "/song.ogg");
 
@@ -193,6 +225,29 @@ public class PlayController : MonoBehaviour {
 		audioSource.PlayDelayed (timeDelay);
 		played = true;
 	}
+	*/
+
+	IEnumerator LoadSongCoroutine() {
+		var audioLocation = new WWW ("file://" + path + "/song.ogg");
+
+		yield return audioLocation;
+
+		AudioClip oldClip = audioLocation.GetAudioClip (false, false);
+		float[] oldSamples = new float[oldClip.samples * oldClip.channels];
+		oldClip.GetData(oldSamples, 0);
+
+
+		samplesDelay = Mathf.CeilToInt(distance) * 10 * resolution / oldClip.frequency / Mathf.CeilToInt(speedMulti) * oldClip.frequency * oldClip.channels;
+		AudioClip newClip = AudioClip.Create ("song", oldClip.samples + samplesDelay, oldClip.channels, oldClip.frequency, false);
+
+		newClip.SetData(oldSamples, samplesDelay);
+
+		audioSource.clip = newClip;
+
+		audioSource.Play ();
+		played = true;
+	}
+
 
 	void setupNote(GameObject obj, string name, float valueX) {
 		obj.layer = LayerMask.NameToLayer ("Background Image");
@@ -274,14 +329,14 @@ public class PlayController : MonoBehaviour {
 	public void increasePerfect() {
 		this.perfect++;
 		this.combo++;
-		score += 100 * this.combo;
+		score += Constants.kPerfectScore * this.combo;
 		scoreTxt.text = score.ToString();
 	}
 
 	public void increaseGood() {
 		this.good++;
 		this.combo++;
-		score += 50 * this.combo;
+		score += Constants.kGoodScore * this.combo;
 		scoreTxt.text = score.ToString();
 	}
 
@@ -291,7 +346,7 @@ public class PlayController : MonoBehaviour {
 			maxCombo = combo;
 		}
 		this.combo = 0;
-		score += 30;
+		score += Constants.kBadScore;
 		scoreTxt.text = score.ToString();
 	}
 

@@ -43,7 +43,7 @@ public class SelectionController : MonoBehaviour {
 
 		yield return audioLocation;
 
-		audioSource.clip = audioLocation.GetAudioClip (false, false);
+		audioSource.clip = audioLocation.GetAudioClip (false, true);
 		audioSource.Play ();
 
 	}

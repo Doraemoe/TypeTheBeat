@@ -16,4 +16,9 @@ public class MenuController : MonoBehaviour {
 	void Start () {
 	}
 
+	void Update() {
+		if (Input.GetKeyDown (KeyCode.Escape)) {
+			Application.Quit ();
+		}
+	}
 }
