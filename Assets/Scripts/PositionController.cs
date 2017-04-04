@@ -19,28 +19,28 @@ public class PositionController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (Input.GetKeyDown (KeyCode.A)) {
-			verifyInput ("A");
+			VerifyInput ("A");
 		} 
 		if (Input.GetKeyDown (KeyCode.S)) {
-			verifyInput ("S");
+			VerifyInput ("S");
 		} 
 		if (Input.GetKeyDown (KeyCode.D)) {
-			verifyInput ("D");
+			VerifyInput ("D");
 		} 
 		if (Input.GetKeyDown (KeyCode.F)) {
-			verifyInput ("F");
+			VerifyInput ("F");
 		} 
 		if (Input.GetKeyDown (KeyCode.J)) {
-			verifyInput ("J");
+			VerifyInput ("J");
 		} 
 		if (Input.GetKeyDown (KeyCode.K)) {
-			verifyInput ("K");
+			VerifyInput ("K");
 		} 
 		if (Input.GetKeyDown (KeyCode.L)) {
-			verifyInput ("L");
+			VerifyInput ("L");
 		} 
 		if (Input.GetKeyDown (KeyCode.Semicolon)) {
-			verifyInput ("SC");
+			VerifyInput ("SC");
 		}
 	}
 
@@ -76,13 +76,13 @@ public class PositionController : MonoBehaviour {
 		}
 	}
 
-	void changeNoteColor(GameObject note) {
+	void ChangeNoteColor(GameObject note) {
 		var color = note.GetComponent<Renderer> ().material.color;
 		color.a = 0.5f;
 		note.GetComponent<SpriteRenderer> ().material.color = color;
 	}
 
-	void verifyInput(string input) {
+	void VerifyInput(string input) {
 		if (currentNotes.Count != 0) {
 			
 			GameObject note = currentNotes.Dequeue ();
@@ -121,22 +121,22 @@ public class PositionController : MonoBehaviour {
 			&& note.transform.position.x <= this.transform.position.x + 0.15) {
 
 			removeNote (note);
-			playCtrl.increasePerfect ();
+			playCtrl.IncreasePerfect ();
 
 		} else if (note.transform.position.x >= this.transform.position.x - 0.35
 			&& note.transform.position.x <= this.transform.position.x + 0.35) {
 			removeNote (note);
-			playCtrl.increaseGood ();
+			playCtrl.IncreaseGood ();
 
 		} else {
 			removeNote (note);
-			playCtrl.increaseBad ();
+			playCtrl.IncreaseBad ();
 
 		}
 	}
 
 	void missNote(GameObject note) {
-		changeNoteColor (note);
+		ChangeNoteColor (note);
 		playCtrl.increaseMiss ();
 	}
 

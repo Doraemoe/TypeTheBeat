@@ -42,7 +42,7 @@ public class PlayController : MonoBehaviour {
 	float timeDelay;
 	float speed;
 	float speedMulti = 3f;
-	float lastPosX = 0f;
+	//float lastPosX = 0f;
 	AudioSource audioSource;
 
 	// Use this for initialization
@@ -51,13 +51,13 @@ public class PlayController : MonoBehaviour {
 		var tmp = positionImg.transform.position;
 		tmp.x = Camera.main.ScreenToWorldPoint (Vector3.zero).x + 2;
 		positionImg.transform.position = tmp;
-		speedMulti = float.Parse(SceneInfo.getValueForKey ("speedMulti"));
+		speedMulti = float.Parse(SceneInfo.GetValueForKey ("speedMulti"));
 
 		audioSource = GetComponent<AudioSource> ();
-		path = SceneInfo.getValueForKey ("path");
-		resolution = int.Parse(SceneInfo.getValueForKey ("resolution"));
-		setDisplay ();
-		loadNotemap ();
+		path = SceneInfo.GetValueForKey ("path");
+		resolution = int.Parse(SceneInfo.GetValueForKey ("resolution"));
+		SetDisplay ();
+		LoadNotemap ();
 
 		StartCoroutine(LoadSongCoroutine ());
 	}
@@ -68,12 +68,12 @@ public class PlayController : MonoBehaviour {
 			if (audioSource.timeSamples == 0) {
 				SceneManager.LoadScene ("Selection");
 			} else {
-				pauseAndDisplayMenu ();
+				PauseAndDisplayMenu ();
 			}
 		}
 
 		if (audioSource.isPlaying) {
-			renderNotes();
+			RenderNotes();
 		} else {
 			if (!paused && played) {
 				if (combo >= maxCombo) {
@@ -90,7 +90,7 @@ public class PlayController : MonoBehaviour {
 					{"resolution", resolution.ToString()},
 					{"speedMulti", speedMulti.ToString()},
 				};
-				SceneInfo.setParameters (arg);
+				SceneInfo.SetParameters (arg);
 				SceneManager.LoadScene ("Score");
 			}
 		}
@@ -130,7 +130,7 @@ public class PlayController : MonoBehaviour {
 	}
 	*/
 
-	void renderNotes() {
+	void RenderNotes() {
 		
 		int delta = audioSource.timeSamples - samplesDelay;
 
@@ -138,25 +138,13 @@ public class PlayController : MonoBehaviour {
 		var pos = this.transform.position;
 		pos.x = positionImg.transform.position.x - current * 0.1f * speedMulti;
 		this.transform.position = pos;
-		/*
-			if (lastPosX != pos.x) {
-				this.transform.position = pos;
-				//this.transform.Translate(Vector3.left);
-			} else {
-				//pos.x -= (Time.deltaTime) * speed;
-				//this.transform.position = pos;
-
-			}
-
-			lastPosX = this.transform.position.x;
-			*/
 	}
 
-	public void goBack () {
+	public void GoBack () {
 		SceneManager.LoadScene ("Selection");
 	}
 
-	void setDisplay() {
+	void SetDisplay() {
 
 		byte[] FileData;
 		string[] files = Directory.GetFiles (path, "bg.*");
@@ -170,7 +158,7 @@ public class PlayController : MonoBehaviour {
 		backgroundImg.texture = tex;
 	}
 
-	void loadNotemap() {
+	void LoadNotemap() {
 		string tmp;
 		List<GameObject> concurrentNotes;
 		string[] names;
@@ -190,11 +178,11 @@ public class PlayController : MonoBehaviour {
 					concurrentNotes = new List<GameObject>(names.Length);
 
 					foreach(string name in names) {
-						concurrentNotes.Add(prepareNote(name, position));
+						concurrentNotes.Add(PrepareNote(name, position));
 					}
 
 					foreach (GameObject note in concurrentNotes) {
-						note.GetComponent<NoteController>().setConcurrentNotes(concurrentNotes);
+						note.GetComponent<NoteController>().SetConcurrentNotes(concurrentNotes);
 					}
 
 
@@ -249,7 +237,7 @@ public class PlayController : MonoBehaviour {
 	}
 
 
-	void setupNote(GameObject obj, string name, float valueX) {
+	void SetupNote(GameObject obj, string name, float valueX) {
 		obj.layer = LayerMask.NameToLayer ("Background Image");
 		obj.transform.parent = this.transform;
 		var tmp = obj.transform.localPosition;
@@ -260,41 +248,41 @@ public class PlayController : MonoBehaviour {
 		obj.name = name;
 	}
 
-	GameObject prepareNote(string name, float location) {
+	GameObject PrepareNote(string name, float location) {
 
 		float value = location * speedMulti;
 
 		if(name == "A") { 
 			GameObject a = (GameObject)Instantiate (noteA);
-			setupNote (a, "A", value);
+			SetupNote (a, "A", value);
 			return a;
 		} else if (name == "S") { 
 			GameObject s = (GameObject)Instantiate (noteS);
-			setupNote (s, "S", value);
+			SetupNote (s, "S", value);
 			return s;
 		} else if (name == "D") { 
 			GameObject d = (GameObject)Instantiate (noteD);
-			setupNote (d, "D", value);
+			SetupNote (d, "D", value);
 			return d;
 		} else if (name == "F") { 
 			GameObject f = (GameObject)Instantiate (noteF);
-			setupNote (f, "F", value);
+			SetupNote (f, "F", value);
 			return f;
 		} else if (name == "J") { 
 			GameObject j = (GameObject)Instantiate (noteJ);
-			setupNote (j, "J", value);
+			SetupNote (j, "J", value);
 			return j;
 		} else if (name == "K") { 
 			GameObject k = (GameObject)Instantiate (noteK);
-			setupNote (k, "K", value);
+			SetupNote (k, "K", value);
 			return k;
 		} else if (name == "L") { 
 			GameObject l = (GameObject)Instantiate (noteL);
-			setupNote (l, "L", value);
+			SetupNote (l, "L", value);
 			return l;
 		} else if (name == "SC") { 
 			GameObject sc = (GameObject)Instantiate (noteSC);
-			setupNote (sc, "SC", value);
+			SetupNote (sc, "SC", value);
 			return sc;
 		}
 
@@ -302,7 +290,7 @@ public class PlayController : MonoBehaviour {
 
 	}
 
-	void pauseAndDisplayMenu() {
+	void PauseAndDisplayMenu() {
 		
 		paused = true;
 		audioSource.Pause ();
@@ -313,11 +301,11 @@ public class PlayController : MonoBehaviour {
 
 	}
 
-	public void clickedYes() {
+	public void ClickedYes() {
 		SceneManager.LoadScene ("Selection");
 	}
 
-	public void clickedNo() {
+	public void ClickedNo() {
 		
 		audioSource.Play ();
 		paused = false;
@@ -326,21 +314,21 @@ public class PlayController : MonoBehaviour {
 		confirmCanvas.gameObject.SetActive (false);
 	}
 
-	public void increasePerfect() {
+	public void IncreasePerfect() {
 		this.perfect++;
 		this.combo++;
 		score += Constants.kPerfectScore * this.combo;
 		scoreTxt.text = score.ToString();
 	}
 
-	public void increaseGood() {
+	public void IncreaseGood() {
 		this.good++;
 		this.combo++;
 		score += Constants.kGoodScore * this.combo;
 		scoreTxt.text = score.ToString();
 	}
 
-	public void increaseBad() {
+	public void IncreaseBad() {
 		this.bad++;
 		if (combo >= maxCombo) {
 			maxCombo = combo;

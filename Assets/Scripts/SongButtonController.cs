@@ -27,14 +27,14 @@ public class SongButtonController : MonoBehaviour {
 		
 	}
 
-	public void setup (string name, string artist, string path, string resolution) {
+	public void Setup (string name, string artist, string path, string resolution) {
 		songName.text = name;
 		songArtist.text = artist;
 		this.path = path;
 		this.resolution = resolution;
 	}
 
-	public void setDisplayAndPlay() {
+	public void SetDisplayAndPlay() {
 		
 		if (selectionObj.GetComponent<SelectionController> ().lastSelected != null &&
 			selectionObj.GetComponent<SelectionController> ().lastSelected.GetInstanceID() == gameObject.GetInstanceID()) {
@@ -42,16 +42,16 @@ public class SongButtonController : MonoBehaviour {
 			para.Add ("path", path);
 			para.Add ("resolution", resolution);
 			para.Add ("speedMulti", selectionObj.GetComponent<SelectionController>().speedMultiTxt.text);
-			SceneInfo.setParameters (para);
+			SceneInfo.SetParameters (para);
 			SceneManager.LoadScene ("Play");
 		}
 		selectionObj.GetComponent<SelectionController> ().lastSelected = gameObject;
 
-		setDisplay ();
-		playMusic ();
+		SetDisplay ();
+		PlayMusic ();
 	}
 
-	void setDisplay() {
+	void SetDisplay() {
 
 
 		byte[] FileData;
@@ -66,8 +66,8 @@ public class SongButtonController : MonoBehaviour {
 
 	}
 
-	void playMusic() {
+	void PlayMusic() {
 		SelectionController ctrl = selectionObj.GetComponent<SelectionController> ();
-		ctrl.loadAndPlayMusic (path + "/song.ogg");
+		ctrl.LoadAndPlayMusic (path + "/song.ogg");
 	}
 }

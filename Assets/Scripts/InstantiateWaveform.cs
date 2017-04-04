@@ -31,7 +31,7 @@ public class InstantiateWaveform : MonoBehaviour {
 		this.transform.position = new Vector3 (0f, 1.2f, 0f);
 
 		for (i = 0; i < waveFormGraph.Length; i++) {
-			var position = generateWaveBar (i);
+			var position = GenerateWaveBar (i);
 			if (position > Camera.main.pixelWidth) {
 				i += 1;
 				break;
@@ -52,7 +52,7 @@ public class InstantiateWaveform : MonoBehaviour {
 		
 	}
 
-	float generateWaveBar(int i) {
+	float GenerateWaveBar(int i) {
 		GameObject insWave = (GameObject)Instantiate (wavePrefab);
 		insWave.transform.position = this.transform.position;
 		insWave.transform.position += Vector3.right * i * 0.1f;
@@ -64,12 +64,12 @@ public class InstantiateWaveform : MonoBehaviour {
 
 	}
 
-	public void redraw(int direction) {
+	public void Redraw(int direction) {
 		if (direction == Constants.kLeft) { //left
 			//generate right
 			int i;
 			for (i = rightMost; i < waveFormGraph.Length; i++) {
-				var position = generateWaveBar (i);
+				var position = GenerateWaveBar (i);
 				if (position > Camera.main.pixelWidth) {
 					i += 1;
 					break;
@@ -94,7 +94,7 @@ public class InstantiateWaveform : MonoBehaviour {
 			//generate left
 			int i;
 			for (i = leftMost - 1; i >= 0; i--) {
-				var position = generateWaveBar (i);
+				var position = GenerateWaveBar (i);
 				if (position < 0) {
 					i -= 1;
 					break;
@@ -118,35 +118,35 @@ public class InstantiateWaveform : MonoBehaviour {
 
 
 
-	public void drawNote(string note) {
+	public void DrawNote(string note) {
 		if(note == "A") { 
 			GameObject a = (GameObject)Instantiate (noteA);
-			noteSetup (a, "A", 0f);
+			NoteSetup (a, "A", 0f);
 		} else if (note == "S") { 
 			GameObject s = (GameObject)Instantiate (noteS);
-			noteSetup (s, "S", 0.8f);
+			NoteSetup (s, "S", 0.8f);
 		} else if (note == "D") { 
 			GameObject d = (GameObject)Instantiate (noteD);
-			noteSetup (d, "D", 1.6f);
+			NoteSetup (d, "D", 1.6f);
 		} else if (note == "F") { 
 			GameObject f = (GameObject)Instantiate (noteF);
-			noteSetup (f, "F", 2.4f);
+			NoteSetup (f, "F", 2.4f);
 		} else if (note == "J") { 
 			GameObject j = (GameObject)Instantiate (noteJ);
-			noteSetup (j, "J", 0.3f);
+			NoteSetup (j, "J", 0.3f);
 		} else if (note == "K") { 
 			GameObject k = (GameObject)Instantiate (noteK);
-			noteSetup (k, "K", 1.3f);
+			NoteSetup (k, "K", 1.3f);
 		} else if (note == "L") { 
 			GameObject l = (GameObject)Instantiate (noteL);
-			noteSetup (l, "L", 1.9f);
+			NoteSetup (l, "L", 1.9f);
 		} else if (note == "SC") { 
 			GameObject sc = (GameObject)Instantiate (noteSC);
-			noteSetup (sc, "SC", 2.8f);
+			NoteSetup (sc, "SC", 2.8f);
 		}
 	}
 
-	void noteSetup(GameObject note, string name, float positionY) {
+	void NoteSetup(GameObject note, string name, float positionY) {
 		note.transform.parent = this.transform;
 		note.name = name;
 
@@ -155,7 +155,7 @@ public class InstantiateWaveform : MonoBehaviour {
 		center.transform.SetParent (note.transform, false);
 	}
 
-	void noteSetup(GameObject note, string name, float positionY, float positionX) {
+	void NoteSetup(GameObject note, string name, float positionY, float positionX) {
 		note.transform.parent = this.transform;
 		var tmp = note.transform.localPosition;
 		tmp.x = positionX;
@@ -167,35 +167,35 @@ public class InstantiateWaveform : MonoBehaviour {
 		center.transform.SetParent (note.transform, false);
 	}
 
-	public void drawNoteWithPosition(string note, float localPosition) {
+	public void DrawNoteWithPosition(string note, float localPosition) {
 		if(note == "A") { 
 			GameObject a = (GameObject)Instantiate (noteA);
-			noteSetup (a, "A", 0f, localPosition);
+			NoteSetup (a, "A", 0f, localPosition);
 
 		} else if (note == "S") { 
 			GameObject s = (GameObject)Instantiate (noteS);
-			noteSetup (s, "S", 0.8f, localPosition);
+			NoteSetup (s, "S", 0.8f, localPosition);
 		} else if (note == "D") { 
 			GameObject d = (GameObject)Instantiate (noteD);
-			noteSetup (d, "D", 1.6f, localPosition);
+			NoteSetup (d, "D", 1.6f, localPosition);
 		} else if (note == "F") { 
 			GameObject f = (GameObject)Instantiate (noteF);
-			noteSetup (f, "F", 2.4f, localPosition);
+			NoteSetup (f, "F", 2.4f, localPosition);
 
 		} else if (note == "J") { 
 			GameObject j = (GameObject)Instantiate (noteJ);
-			noteSetup (j, "J", 0.3f, localPosition);
+			NoteSetup (j, "J", 0.3f, localPosition);
 
 		} else if (note == "K") { 
 			GameObject k = (GameObject)Instantiate (noteK);
-			noteSetup (k, "K", 1.3f, localPosition);
+			NoteSetup (k, "K", 1.3f, localPosition);
 		} else if (note == "L") { 
 			GameObject l = (GameObject)Instantiate (noteL);
-			noteSetup (l, "L", 1.9f, localPosition);
+			NoteSetup (l, "L", 1.9f, localPosition);
 
 		} else if (note == "SC") { 
 			GameObject sc = (GameObject)Instantiate (noteSC);
-			noteSetup (sc, "SC", 2.8f, localPosition);
+			NoteSetup (sc, "SC", 2.8f, localPosition);
 		}
 	}
 		

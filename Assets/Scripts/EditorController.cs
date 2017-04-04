@@ -47,11 +47,11 @@ public class EditorController : MonoBehaviour {
 	void Start () {
 		audioSource = GetComponent<AudioSource> ();
 
-		selectedLocation.onEndEdit.AddListener(delegate {setSelectedLocalPosition(); });
+		selectedLocation.onEndEdit.AddListener(delegate {SetSelectedLocalPosition(); });
 
 	}
 
-	void setSelectedLocalPosition() {
+	void SetSelectedLocalPosition() {
 		if(selectedObject == null) {
 			selectedLocation.text = "";
 			return;
@@ -73,7 +73,7 @@ public class EditorController : MonoBehaviour {
 
 			if (hits.Length != 0) {
 				if (hits.Length == 1) {
-					clearSelection ();
+					ClearSelection ();
 				} else {
 					foreach (var hit in hits) {
 						if (hit.transform.gameObject.tag == "GameController") {
@@ -82,7 +82,7 @@ public class EditorController : MonoBehaviour {
 						   selectedObject.GetInstanceID () == hit.transform.gameObject.GetInstanceID ()) {
 							continue;
 						} else {
-							clearColor ();
+							ClearColor ();
 							selectedObject = hit.transform.gameObject;
 							var color = selectedObject.GetComponent<Renderer> ().material.color;
 							color.a = 0.8f;
@@ -103,49 +103,49 @@ public class EditorController : MonoBehaviour {
 
 		if (instantiateWaveController.activeSelf && !nameInput.isFocused && !artistInput.isFocused && !selectedLocation.isFocused) {
 			if (Input.GetKeyDown (KeyCode.Escape)) {
-				clearSelection ();
+				ClearSelection ();
 			}
 			if (Input.GetKeyDown (KeyCode.Delete)) {
-				deleteSelection ();
+				DeleteSelection ();
 			}
 			if (Input.GetKeyDown (KeyCode.Backspace)) {
-				deleteSelection ();
+				DeleteSelection ();
 			}
 			if (Input.GetKey (KeyCode.LeftArrow)) {
-				moveSelectedLeft ();
+				MoveSelectedLeft ();
 			}
 			if (Input.GetKey (KeyCode.RightArrow))  {
-				moveSelectedRight ();
+				MoveSelectedRight ();
 			}
 
 			if (Input.GetKeyDown (KeyCode.A)) {
-				instantiateWaveController.GetComponent<InstantiateWaveform> ().drawNote ("A");
+				instantiateWaveController.GetComponent<InstantiateWaveform> ().DrawNote ("A");
 			} 
 			if (Input.GetKeyDown (KeyCode.S)) {
-				instantiateWaveController.GetComponent<InstantiateWaveform> ().drawNote ("S");
+				instantiateWaveController.GetComponent<InstantiateWaveform> ().DrawNote ("S");
 			} 
 			if (Input.GetKeyDown (KeyCode.D)) {
-				instantiateWaveController.GetComponent<InstantiateWaveform> ().drawNote ("D");
+				instantiateWaveController.GetComponent<InstantiateWaveform> ().DrawNote ("D");
 			} 
 			if (Input.GetKeyDown (KeyCode.F)) {
-				instantiateWaveController.GetComponent<InstantiateWaveform> ().drawNote ("F");
+				instantiateWaveController.GetComponent<InstantiateWaveform> ().DrawNote ("F");
 			} 
 			if (Input.GetKeyDown (KeyCode.J)) {
-				instantiateWaveController.GetComponent<InstantiateWaveform> ().drawNote ("J");
+				instantiateWaveController.GetComponent<InstantiateWaveform> ().DrawNote ("J");
 			} 
 			if (Input.GetKeyDown (KeyCode.K)) {
-				instantiateWaveController.GetComponent<InstantiateWaveform> ().drawNote ("K");
+				instantiateWaveController.GetComponent<InstantiateWaveform> ().DrawNote ("K");
 			} 
 			if (Input.GetKeyDown (KeyCode.L)) {
-				instantiateWaveController.GetComponent<InstantiateWaveform> ().drawNote ("L");
+				instantiateWaveController.GetComponent<InstantiateWaveform> ().DrawNote ("L");
 			} 
 			if (Input.GetKeyDown (KeyCode.Semicolon)) {
-				instantiateWaveController.GetComponent<InstantiateWaveform> ().drawNote ("SC");
+				instantiateWaveController.GetComponent<InstantiateWaveform> ().DrawNote ("SC");
 			}
 		}
 	}
 
-	void moveSelectedRight() {
+	void MoveSelectedRight() {
 		if (selectedObject == null) {
 			return;
 		}
@@ -153,7 +153,7 @@ public class EditorController : MonoBehaviour {
 		selectedLocation.text = selectedObject.transform.localPosition.x.ToString();
 	}
 
-	void moveSelectedLeft() {
+	void MoveSelectedLeft() {
 		if (selectedObject == null) {
 			return;
 		}
@@ -161,7 +161,7 @@ public class EditorController : MonoBehaviour {
 		selectedLocation.text = selectedObject.transform.localPosition.x.ToString();
 	}
 
-	void deleteSelection() {
+	void DeleteSelection() {
 		if (selectedObject == null) {
 			return;
 		}
@@ -174,19 +174,19 @@ public class EditorController : MonoBehaviour {
 		selectedObject = null;
 	}
 
-	void clearSelection() {
+	void ClearSelection() {
 		if (selectedObject == null) {
 			return;
 		}
 
-		clearColor ();
+		ClearColor ();
 
 		selectedLocation.text = "";
 		selectedObject = null;
 
 	}
 
-	void clearColor() {
+	void ClearColor() {
 		if (selectedObject == null) {
 			return;
 		}
@@ -225,11 +225,11 @@ public class EditorController : MonoBehaviour {
 		yield return audioLocation;
 
 		audioSource.clip = audioLocation.GetAudioClip (false, false);
-		generateSoundWave ();
+		GenerateSoundWave ();
 
 	}
 
-	void generateSoundWave() {
+	void GenerateSoundWave() {
 		max = 0;
 
 		resolution = audioSource.clip.frequency / Constants.kSamplePerSecond;
@@ -250,7 +250,7 @@ public class EditorController : MonoBehaviour {
 			}
 		}
 
-		this.normalizeWaveForm ();
+		this.NormalizeWaveForm ();
 
 		if (instantiateWaveController.activeSelf) {
 			instantiateWaveController.SetActive (false);
@@ -262,7 +262,7 @@ public class EditorController : MonoBehaviour {
 		waveControllerX = Camera.main.WorldToScreenPoint(instantiateWaveController.transform.position).x;
 	}
 
-	void normalizeWaveForm() {
+	void NormalizeWaveForm() {
 		for (int i = 0; i < waveForm.Length; i++) {
 			waveForm [i] /= max;
 		}
@@ -289,10 +289,10 @@ public class EditorController : MonoBehaviour {
 
 			if (pixOffset > 10) {
 				mouseX = Input.mousePosition.x;
-				instantiateWaveController.GetComponent<InstantiateWaveform> ().redraw (Constants.kLeft);
+				instantiateWaveController.GetComponent<InstantiateWaveform> ().Redraw (Constants.kLeft);
 			} else if (pixOffset < -10) {
 				mouseX = Input.mousePosition.x;
-				instantiateWaveController.GetComponent<InstantiateWaveform> ().redraw (Constants.kRight);
+				instantiateWaveController.GetComponent<InstantiateWaveform> ().Redraw (Constants.kRight);
 			} else {
 				
 			}
@@ -307,7 +307,7 @@ public class EditorController : MonoBehaviour {
 		var pixOffset =  waveControllerX - currentPositionX;
 		if (pixOffset > 10) {
 			waveControllerX = currentPositionX;
-			instantiateWaveController.GetComponent<InstantiateWaveform> ().redraw (Constants.kLeft);
+			instantiateWaveController.GetComponent<InstantiateWaveform> ().Redraw (Constants.kLeft);
 		}
 	}
 
@@ -336,12 +336,12 @@ public class EditorController : MonoBehaviour {
 		}
 	}
 
-	public void backHome() {
+	public void BackHome() {
 		blurImg.gameObject.SetActive (true);
 		confirmMenu.gameObject.SetActive (true);
 	}
 
-	public void cancel() {
+	public void Cancel() {
 		confirmMenu.gameObject.SetActive (false);
 		blurImg.gameObject.SetActive (false);
 	}
@@ -350,7 +350,7 @@ public class EditorController : MonoBehaviour {
 		SceneManager.LoadScene (sceneName);
 	}
 
-	public void save() {
+	public void Save() {
 		
 
 		var path = StandaloneFileBrowser.OpenFolderPanel(
@@ -366,7 +366,7 @@ public class EditorController : MonoBehaviour {
 			path[0] = new System.Uri(path[0]).AbsolutePath; 
 			path[0] = WWW.UnEscapeURL (path[0]);
 
-			collectNotesData();
+			CollectNotesData();
 
 			var sr = File.CreateText(path[0] + "song.notemap");
 
@@ -391,13 +391,13 @@ public class EditorController : MonoBehaviour {
 			*/
 			sr.Close();
 
-			writeMetaXML (path[0] + "meta.xml");
+			WriteMetaXML (path[0] + "meta.xml");
 
 			File.Copy (songLocation, path [0] + "song.ogg", true);
 		}
 	}
 
-	void collectNotesData() {
+	void CollectNotesData() {
 		GameObject[] notes = GameObject.FindGameObjectsWithTag ("Note");
 		notesData = new Dictionary<float, List<string>> (notes.Length);
 
@@ -416,7 +416,7 @@ public class EditorController : MonoBehaviour {
 		}
 	}
 
-	void writeMetaXML(string path) {
+	void WriteMetaXML(string path) {
 		XmlTextWriter writer = new XmlTextWriter(path, System.Text.Encoding.UTF8);
 		writer.WriteStartDocument(true);
 		writer.Formatting = Formatting.Indented;
@@ -438,7 +438,7 @@ public class EditorController : MonoBehaviour {
 		writer.Close();
 	}
 
-	public void loadNotes() {
+	public void LoadNotes() {
 
 		var extensions = new [] {
 			new ExtensionFilter("Notemap File", "notemap"),
@@ -477,7 +477,7 @@ public class EditorController : MonoBehaviour {
 							string[] names = tmp.Trim().Split(null);
 							float position = float.Parse(reader.ReadLine(), CultureInfo.InvariantCulture.NumberFormat);
 							foreach(string name in names) {
-								instantiateWaveController.GetComponent<InstantiateWaveform> ().drawNoteWithPosition(name, position);
+								instantiateWaveController.GetComponent<InstantiateWaveform> ().DrawNoteWithPosition(name, position);
 							}
 						}
 					} while (tmp != null);

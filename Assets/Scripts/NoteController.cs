@@ -19,11 +19,11 @@ public class NoteController : MonoBehaviour {
 		
 	}
 
-	public void setTimestamp(int t) {
+	public void SetTimestamp(int t) {
 		this.timestamp = t;
 	}
 
-	public void setConcurrentNotes(List<GameObject> con) {
+	public void SetConcurrentNotes(List<GameObject> con) {
 		concurrentNotes = con;
 	}
 

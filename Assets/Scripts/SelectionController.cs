@@ -33,7 +33,7 @@ public class SelectionController : MonoBehaviour {
 	}
 
 
-	public void loadAndPlayMusic(string path) {
+	public void LoadAndPlayMusic(string path) {
 		StartCoroutine (LoadSongCoroutine (path));
 	}
 
@@ -48,18 +48,18 @@ public class SelectionController : MonoBehaviour {
 
 	}
 
-	public void option() {
+	public void Option() {
 		optionCanvas.gameObject.SetActive (true);
 	}
 
-	public void updateValue() {
+	public void UpdateValue() {
 		speedMulti = slider.value;
 		speedMulti = Mathf.Round(speedMulti * 10f) / 10f;
 
 		speedMultiTxt.text = speedMulti.ToString();
 	}
 
-	public void closeOption() {
+	public void CloseOption() {
 		optionCanvas.gameObject.SetActive (false);
 	}
 }

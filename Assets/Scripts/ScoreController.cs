@@ -20,8 +20,8 @@ public class ScoreController : MonoBehaviour {
 	string path;
 	// Use this for initialization
 	void Start () {
-		path = SceneInfo.getValueForKey ("path");
-		setDisplay ();
+		path = SceneInfo.GetValueForKey ("path");
+		SetDisplay ();
 	}
 	
 	// Update is called once per frame
@@ -29,7 +29,7 @@ public class ScoreController : MonoBehaviour {
 		
 	}
 
-	void setDisplay() {
+	void SetDisplay() {
 
 		byte[] FileData;
 		string[] files = Directory.GetFiles (path, "bg.*");
@@ -40,25 +40,25 @@ public class ScoreController : MonoBehaviour {
 
 		background.texture = tex;
 
-		perfect.text = "Pefect: " + SceneInfo.getValueForKey ("perfect");
-		good.text = "Good: " + SceneInfo.getValueForKey ("good");
-		bad.text = "Bad: " + SceneInfo.getValueForKey ("bad");
-		miss.text = "Miss: " + SceneInfo.getValueForKey ("miss");
-		score.text = "Score: " + SceneInfo.getValueForKey ("score");
-		combo.text = "Combo:" + Environment.NewLine + SceneInfo.getValueForKey ("combo");
+		perfect.text = "Pefect: " + SceneInfo.GetValueForKey ("perfect");
+		good.text = "Good: " + SceneInfo.GetValueForKey ("good");
+		bad.text = "Bad: " + SceneInfo.GetValueForKey ("bad");
+		miss.text = "Miss: " + SceneInfo.GetValueForKey ("miss");
+		score.text = "Score: " + SceneInfo.GetValueForKey ("score");
+		combo.text = "Combo:" + Environment.NewLine + SceneInfo.GetValueForKey ("combo");
 	}
 
-	public void loadScene(string name) {
+	public void LoadScene(string name) {
 		SceneManager.LoadScene (name);
 	}
 
-	public void retry() {
+	public void Retry() {
 		Dictionary<string, string> par = new Dictionary<string, string> () {
 			{"path", path},
-			{"resolution", SceneInfo.getValueForKey("resolution")},
-			{"speedMulti", SceneInfo.getValueForKey("speedMulti")},
+			{"resolution", SceneInfo.GetValueForKey("resolution")},
+			{"speedMulti", SceneInfo.GetValueForKey("speedMulti")},
 		};
-		SceneInfo.setParameters (par);
+		SceneInfo.SetParameters (par);
 		SceneManager.LoadScene ("Play");
 	}
 }
