@@ -52,6 +52,10 @@ public class InstantiateWaveform : MonoBehaviour {
 		
 	}
 
+	/// <summary>
+	/// Generate wave bar based on song data
+	/// </summary>
+	/// <returns>Screen position of generated wave bar</returns>
 	float GenerateWaveBar(int i) {
 		GameObject insWave = (GameObject)Instantiate (wavePrefab);
 		insWave.transform.position = this.transform.position;
@@ -64,6 +68,10 @@ public class InstantiateWaveform : MonoBehaviour {
 
 	}
 
+	/// <summary>
+	/// Redraw wave bar when user move left or right
+	/// </summary>
+	/// <param name="direction">Direction user moved</param>
 	public void Redraw(int direction) {
 		if (direction == Constants.kLeft) { //left
 			//generate right
@@ -117,7 +125,9 @@ public class InstantiateWaveform : MonoBehaviour {
 	}
 
 
-
+	/// <summary>
+	/// Draw note on screen based on user input
+	/// </summary>
 	public void DrawNote(string note) {
 		if(note == "A") { 
 			GameObject a = (GameObject)Instantiate (noteA);
@@ -146,6 +156,12 @@ public class InstantiateWaveform : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Setup note
+	/// </summary>
+	/// <param name="note">The note need to setup</param>
+	/// <param name="name">Name of the note</param>
+	/// <param name="positionY">Y position on screen</param>
 	void NoteSetup(GameObject note, string name, float positionY) {
 		note.transform.parent = this.transform;
 		note.name = name;
@@ -155,6 +171,13 @@ public class InstantiateWaveform : MonoBehaviour {
 		center.transform.SetParent (note.transform, false);
 	}
 
+	/// <summary>
+	/// Open a home loan account
+	/// </summary>
+	/// <param name="note">The note need to setup</param>
+	/// <param name="name">Name of the note</param>
+	/// <param name="positionY">Y position on screen</param>
+	/// <param name="positionX">X position on screen</param>
 	void NoteSetup(GameObject note, string name, float positionY, float positionX) {
 		note.transform.parent = this.transform;
 		var tmp = note.transform.localPosition;
@@ -167,6 +190,11 @@ public class InstantiateWaveform : MonoBehaviour {
 		center.transform.SetParent (note.transform, false);
 	}
 
+	/// <summary>
+	/// Draw note at given position
+	/// </summary>
+	/// <param name="note">The note need to draw</param>
+	/// <param name="localPosition">Local position of the note</param>
 	public void DrawNoteWithPosition(string note, float localPosition) {
 		if(note == "A") { 
 			GameObject a = (GameObject)Instantiate (noteA);

@@ -44,6 +44,10 @@ public class PositionController : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// When note entered the determination part
+	/// </summary>
+	/// <param name="col">Note entered determination part</param>
 	void OnCollisionEnter2D (Collision2D col)
 	{
 		if(col.gameObject.tag == "Note")
@@ -54,6 +58,10 @@ public class PositionController : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// When note left the determination part
+	/// </summary>
+	/// <param name="col">Note left determination part</param>
 	void OnCollisionExit2D(Collision2D col) {
 		if(col.gameObject.tag == "Note")
 		{
@@ -76,12 +84,19 @@ public class PositionController : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Change note color when missed
+	/// </summary>
 	void ChangeNoteColor(GameObject note) {
 		var color = note.GetComponent<Renderer> ().material.color;
 		color.a = 0.5f;
 		note.GetComponent<SpriteRenderer> ().material.color = color;
 	}
 
+	/// <summary>
+	/// Verify user input
+	/// </summary>
+	/// <param name="input">User input</param>
 	void VerifyInput(string input) {
 		if (currentNotes.Count != 0) {
 			
@@ -105,7 +120,11 @@ public class PositionController : MonoBehaviour {
 		}
 	}
 
-
+	/// <summary>
+	/// Check other notes also appear at the same time
+	/// </summary>
+	/// <param name="note">Note been checked</param>
+	/// <param name="input">User input</param>
 	void checkConcurrent(GameObject note, string input) {
 		if (note.GetComponent<NoteController> ().alreadyChecked) {
 			return;
@@ -116,6 +135,10 @@ public class PositionController : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Detect accuracy of user input
+	/// </summary>
+	/// <param name="note">Note been checked</param>
 	void detectAcc(GameObject note) {
 		if (note.transform.position.x >= this.transform.position.x - 0.15
 			&& note.transform.position.x <= this.transform.position.x + 0.15) {
@@ -135,11 +158,19 @@ public class PositionController : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// When note was missed
+	/// </summary>
+	/// <param name="note">Note missed</param>
 	void missNote(GameObject note) {
 		ChangeNoteColor (note);
 		playCtrl.increaseMiss ();
 	}
 
+	/// <summary>
+	/// When note need to be removed
+	/// </summary>
+	/// <param name="note">Note been removed</param>
 	void removeNote(GameObject note) {
 		note.GetComponent<NoteController> ().alreadyChecked = true;
 		note.GetComponent<SpriteRenderer> ().enabled = false;

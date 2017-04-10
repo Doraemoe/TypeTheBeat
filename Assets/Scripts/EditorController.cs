@@ -28,6 +28,7 @@ public class EditorController : MonoBehaviour {
 	public InputField selectedLocation;
 	public InputField nameInput;
 	public InputField artistInput;
+	public GameObject indicatorPrefab;
 
 	Vector3 startPosition;
 	float originalPositionX;
@@ -41,6 +42,7 @@ public class EditorController : MonoBehaviour {
 	string[] noteName;
 	string songLocation;
 	Dictionary<float, List<string>> notesData;
+	GameObject indicator;
 
 
 	// Use this for initialization
@@ -49,6 +51,9 @@ public class EditorController : MonoBehaviour {
 
 		selectedLocation.onEndEdit.AddListener(delegate {SetSelectedLocalPosition(); });
 
+		indicator = (GameObject)Instantiate (indicatorPrefab);
+		indicator.transform.position = Vector3.zero;
+		indicator.transform.localScale = Vector3.one * 3;
 	}
 
 	void SetSelectedLocalPosition() {
@@ -60,6 +65,22 @@ public class EditorController : MonoBehaviour {
 		tmp.x = float.Parse(selectedLocation.text);
 		selectedObject.transform.localPosition = tmp;
 
+	}
+
+	/// <summary>
+	/// Start the loading indicator
+	/// </summary>
+	void StartIndicator() {
+		blurImg.gameObject.SetActive (true);
+		indicator.SetActive (true);
+	}
+
+	/// <summary>
+	/// Stop the loading indicator
+	/// </summary>
+	void StopIndicator() {
+		indicator.SetActive (false);
+		blurImg.gameObject.SetActive (false);
 	}
 	
 	// Update is called once per frame
@@ -145,6 +166,10 @@ public class EditorController : MonoBehaviour {
 		}
 	}
 
+
+	/// <summary>
+	/// Move a selected note to the right, 0.01 unit each time.
+	/// </summary>
 	void MoveSelectedRight() {
 		if (selectedObject == null) {
 			return;
@@ -153,6 +178,9 @@ public class EditorController : MonoBehaviour {
 		selectedLocation.text = selectedObject.transform.localPosition.x.ToString();
 	}
 
+	/// <summary>
+	/// Move a selected note to the left, 0.01 unit each time.
+	/// </summary>
 	void MoveSelectedLeft() {
 		if (selectedObject == null) {
 			return;
@@ -161,6 +189,9 @@ public class EditorController : MonoBehaviour {
 		selectedLocation.text = selectedObject.transform.localPosition.x.ToString();
 	}
 
+	/// <summary>
+	/// Delete selected note.
+	/// </summary>
 	void DeleteSelection() {
 		if (selectedObject == null) {
 			return;
@@ -174,6 +205,9 @@ public class EditorController : MonoBehaviour {
 		selectedObject = null;
 	}
 
+	/// <summary>
+	/// Uncheck the selected note.
+	/// </summary>
 	void ClearSelection() {
 		if (selectedObject == null) {
 			return;
@@ -186,6 +220,9 @@ public class EditorController : MonoBehaviour {
 
 	}
 
+	/// <summary>
+	/// Clear the highlight color of selected note.
+	/// </summary>
 	void ClearColor() {
 		if (selectedObject == null) {
 			return;
@@ -198,8 +235,10 @@ public class EditorController : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Open a music file.
+	/// </summary>
 	public void OpenFile () {
-
 		var extensions = new [] {
 			new ExtensionFilter("Music Files", "ogg"),
 		};
@@ -217,19 +256,30 @@ public class EditorController : MonoBehaviour {
 		}
 	}
 
-
+	/// <summary>
+	/// Load music file
+	/// </summary>
+	/// <param name="path">path to the music file.</param>
 	IEnumerator LoadSongCoroutine(string path)
 	{
+		StartIndicator ();
+
 		var audioLocation = new WWW (path);
 
 		yield return audioLocation;
 
 		audioSource.clip = audioLocation.GetAudioClip (false, false);
+
 		GenerateSoundWave ();
 
+		StopIndicator ();
 	}
 
+	/// <summary>
+	/// Generate sound wave based on the music file
+	/// </summary>
 	void GenerateSoundWave() {
+		
 		max = 0;
 
 		resolution = audioSource.clip.frequency / Constants.kSamplePerSecond;
@@ -260,14 +310,18 @@ public class EditorController : MonoBehaviour {
 		loadNotesBtn.gameObject.SetActive (true);
 		originalPositionX = instantiateWaveController.transform.position.x;
 		waveControllerX = Camera.main.WorldToScreenPoint(instantiateWaveController.transform.position).x;
+
 	}
 
+	/// <summary>
+	/// Normalize the height of the music file wave form to the height of sheet
+	/// </summary>
 	void NormalizeWaveForm() {
 		for (int i = 0; i < waveForm.Length; i++) {
 			waveForm [i] /= max;
 		}
 	}
-
+		
 	void OnMouseDown() {
 		mouseX = Input.mousePosition.x;
 		startPosition = Camera.main.ScreenToWorldPoint (Input.mousePosition);
@@ -299,6 +353,9 @@ public class EditorController : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Play music based on location displayed on screen
+	/// </summary>
 	void PlayMusic() {
 
 		float current = audioSource.timeSamples / resolution;
@@ -311,6 +368,9 @@ public class EditorController : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Play/Pause music file
+	/// </summary>
 	public void PlayPause() {
 		if (audioSource.isPlaying == true) {
 			playPauseTxt.text = "Play";
@@ -336,20 +396,33 @@ public class EditorController : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Back to main menu screen
+	/// </summary>
 	public void BackHome() {
 		blurImg.gameObject.SetActive (true);
 		confirmMenu.gameObject.SetActive (true);
 	}
 
+	/// <summary>
+	/// Cancel dialog and return to current scene
+	/// </summary>
 	public void Cancel() {
 		confirmMenu.gameObject.SetActive (false);
 		blurImg.gameObject.SetActive (false);
 	}
 
+	/// <summary>
+	/// Load another scene
+	/// </summary>
+	/// <param name="sceneName">Scene name</param>
 	public void LoadScene(string sceneName) {
 		SceneManager.LoadScene (sceneName);
 	}
 
+	/// <summary>
+	/// Save note edited
+	/// </summary>
 	public void Save() {
 		
 
@@ -397,6 +470,9 @@ public class EditorController : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Collected all notes appeared in the scene
+	/// </summary>
 	void CollectNotesData() {
 		GameObject[] notes = GameObject.FindGameObjectsWithTag ("Note");
 		notesData = new Dictionary<float, List<string>> (notes.Length);
@@ -416,6 +492,9 @@ public class EditorController : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Write meta data of the song
+	/// </summary>
 	void WriteMetaXML(string path) {
 		XmlTextWriter writer = new XmlTextWriter(path, System.Text.Encoding.UTF8);
 		writer.WriteStartDocument(true);
@@ -438,6 +517,9 @@ public class EditorController : MonoBehaviour {
 		writer.Close();
 	}
 
+	/// <summary>
+	/// Load saved note data
+	/// </summary>
 	public void LoadNotes() {
 
 		var extensions = new [] {

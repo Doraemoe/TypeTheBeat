@@ -26,6 +26,13 @@ public class ListController : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Generate button on screen
+	/// </summary>
+	/// <param name="name">Name of the button</param>
+	/// <param name="artist">Artist display on the button</param>
+	/// <param name="path">Path to the song file</param>
+	/// <param name="resolution">Resolution data for the song file</param>
 	void GenerateBtn(string name, string artist, string path, string resolution) {
 		GameObject insBtn = (GameObject)Instantiate (songBtnPrefab);
 		insBtn.transform.SetParent (this.transform, false);

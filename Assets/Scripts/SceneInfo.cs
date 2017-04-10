@@ -13,10 +13,18 @@ public static class SceneInfo {
 		{"speedMulti", "3"},
 	};
 
+	/// <summary>
+	/// Set parameters
+	/// </summary>
+	/// <param name="para">Parameters stored in a dictionary</param>
 	public static void SetParameters(Dictionary<string, string> para) {
 		parameters = para;
 	}
 
+	/// <summary>
+	/// Get value in the parameter dictionary
+	/// </summary>
+	/// <param name="key">key</param>
 	public static string GetValueForKey(string key) {
 		return parameters [key];
 	}

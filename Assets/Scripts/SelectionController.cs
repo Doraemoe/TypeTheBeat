@@ -28,11 +28,18 @@ public class SelectionController : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Load scene
+	/// </summary>
+	/// <param name="name">Name of the scene been loaded</param>
 	public void LoadScene(string sceneName) {
 		SceneManager.LoadScene (sceneName);
 	}
 
-
+	/// <summary>
+	/// Load background image and play music
+	/// </summary>
+	/// <param name="name">Path to the file to be loaded</param>
 	public void LoadAndPlayMusic(string path) {
 		StartCoroutine (LoadSongCoroutine (path));
 	}
@@ -48,10 +55,16 @@ public class SelectionController : MonoBehaviour {
 
 	}
 
+	/// <summary>
+	/// Open option menu
+	/// </summary>
 	public void Option() {
 		optionCanvas.gameObject.SetActive (true);
 	}
 
+	/// <summary>
+	/// Update value based on value in option menu
+	/// </summary>
 	public void UpdateValue() {
 		speedMulti = slider.value;
 		speedMulti = Mathf.Round(speedMulti * 10f) / 10f;
@@ -59,6 +72,9 @@ public class SelectionController : MonoBehaviour {
 		speedMultiTxt.text = speedMulti.ToString();
 	}
 
+	/// <summary>
+	/// Close option menu
+	/// </summary>
 	public void CloseOption() {
 		optionCanvas.gameObject.SetActive (false);
 	}

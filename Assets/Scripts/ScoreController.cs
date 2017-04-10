@@ -29,6 +29,9 @@ public class ScoreController : MonoBehaviour {
 		
 	}
 
+	/// <summary>
+	/// Set score screen display
+	/// </summary>
 	void SetDisplay() {
 
 		byte[] FileData;
@@ -48,10 +51,17 @@ public class ScoreController : MonoBehaviour {
 		combo.text = "Combo:" + Environment.NewLine + SceneInfo.GetValueForKey ("combo");
 	}
 
+	/// <summary>
+	/// Load scene
+	/// </summary>
+	/// <param name="name">Name of the scene been loaded</param>
 	public void LoadScene(string name) {
 		SceneManager.LoadScene (name);
 	}
 
+	/// <summary>
+	/// Restart the same song
+	/// </summary>
 	public void Retry() {
 		Dictionary<string, string> par = new Dictionary<string, string> () {
 			{"path", path},

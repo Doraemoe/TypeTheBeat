@@ -27,6 +27,12 @@ public class SongButtonController : MonoBehaviour {
 		
 	}
 
+	/// <summary>
+	/// Setup information on the button
+	/// </summary>
+	/// <param name="name">Name of the song</param>
+	/// <param name="artist">Artist of the song</param>
+	/// <param name="resolution">Resolution data for this song</param>
 	public void Setup (string name, string artist, string path, string resolution) {
 		songName.text = name;
 		songArtist.text = artist;
@@ -34,6 +40,9 @@ public class SongButtonController : MonoBehaviour {
 		this.resolution = resolution;
 	}
 
+	/// <summary>
+	/// Setup background image and play the music
+	/// </summary>
 	public void SetDisplayAndPlay() {
 		
 		if (selectionObj.GetComponent<SelectionController> ().lastSelected != null &&
@@ -51,6 +60,9 @@ public class SongButtonController : MonoBehaviour {
 		PlayMusic ();
 	}
 
+	/// <summary>
+	/// Setup background image
+	/// </summary>
 	void SetDisplay() {
 
 
@@ -66,6 +78,9 @@ public class SongButtonController : MonoBehaviour {
 
 	}
 
+	/// <summary>
+	/// Play the music
+	/// </summary>
 	void PlayMusic() {
 		SelectionController ctrl = selectionObj.GetComponent<SelectionController> ();
 		ctrl.LoadAndPlayMusic (path + "/song.ogg");

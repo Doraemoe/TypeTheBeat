@@ -130,6 +130,9 @@ public class PlayController : MonoBehaviour {
 	}
 	*/
 
+	/// <summary>
+	/// Render notes on screen
+	/// </summary>
 	void RenderNotes() {
 		
 		int delta = audioSource.timeSamples - samplesDelay;
@@ -140,10 +143,16 @@ public class PlayController : MonoBehaviour {
 		this.transform.position = pos;
 	}
 
+	/// <summary>
+	/// Back to song selection screen
+	/// </summary>
 	public void GoBack () {
 		SceneManager.LoadScene ("Selection");
 	}
 
+	/// <summary>
+	/// Setup background image
+	/// </summary>
 	void SetDisplay() {
 
 		byte[] FileData;
@@ -158,6 +167,9 @@ public class PlayController : MonoBehaviour {
 		backgroundImg.texture = tex;
 	}
 
+	/// <summary>
+	/// Load notemap from file
+	/// </summary>
 	void LoadNotemap() {
 		string tmp;
 		List<GameObject> concurrentNotes;
@@ -215,6 +227,9 @@ public class PlayController : MonoBehaviour {
 	}
 	*/
 
+	/// <summary>
+	/// Load song from file
+	/// </summary>
 	IEnumerator LoadSongCoroutine() {
 		var audioLocation = new WWW ("file://" + path + "/song.ogg");
 
@@ -236,18 +251,29 @@ public class PlayController : MonoBehaviour {
 		played = true;
 	}
 
-
-	void SetupNote(GameObject obj, string name, float valueX) {
-		obj.layer = LayerMask.NameToLayer ("Background Image");
-		obj.transform.parent = this.transform;
-		var tmp = obj.transform.localPosition;
+	/// <summary>
+	/// Setup note
+	/// </summary>
+	/// <param name="note">Note to setup</param>
+	/// <param name="name">Name of the note</param>
+	/// <param name="valueX">X position on the screen</param>
+	void SetupNote(GameObject note, string name, float valueX) {
+		note.layer = LayerMask.NameToLayer ("Background Image");
+		note.transform.parent = this.transform;
+		var tmp = note.transform.localPosition;
 		tmp.x = valueX; 
-		tmp.y = obj.transform.position.y;
+		tmp.y = note.transform.position.y;
 		tmp.z = 0;
-		obj.transform.localPosition = tmp;
-		obj.name = name;
+		note.transform.localPosition = tmp;
+		note.name = name;
 	}
 
+	/// <summary>
+	/// Prepare note to be displayed on screen
+	/// </summary>
+	/// <param name="name">Name of the note</param>
+	/// <param name="location">Position of the note</param>
+	/// <returns>Set up game object</returns>
 	GameObject PrepareNote(string name, float location) {
 
 		float value = location * speedMulti;
@@ -290,6 +316,9 @@ public class PlayController : MonoBehaviour {
 
 	}
 
+	/// <summary>
+	/// Pause the gameplay and display menu
+	/// </summary>
 	void PauseAndDisplayMenu() {
 		
 		paused = true;
@@ -301,10 +330,16 @@ public class PlayController : MonoBehaviour {
 
 	}
 
+	/// <summary>
+	/// Return to the song selection screen
+	/// </summary>
 	public void ClickedYes() {
 		SceneManager.LoadScene ("Selection");
 	}
 
+	/// <summary>
+	/// Back to gameplay
+	/// </summary>
 	public void ClickedNo() {
 		
 		audioSource.Play ();
@@ -314,6 +349,9 @@ public class PlayController : MonoBehaviour {
 		confirmCanvas.gameObject.SetActive (false);
 	}
 
+	/// <summary>
+	/// Increase perfect score
+	/// </summary>
 	public void IncreasePerfect() {
 		this.perfect++;
 		this.combo++;
@@ -321,6 +359,9 @@ public class PlayController : MonoBehaviour {
 		scoreTxt.text = score.ToString();
 	}
 
+	/// <summary>
+	/// Increase good score
+	/// </summary>
 	public void IncreaseGood() {
 		this.good++;
 		this.combo++;
@@ -328,6 +369,9 @@ public class PlayController : MonoBehaviour {
 		scoreTxt.text = score.ToString();
 	}
 
+	/// <summary>
+	/// Increase bad score
+	/// </summary>
 	public void IncreaseBad() {
 		this.bad++;
 		if (combo >= maxCombo) {
@@ -338,6 +382,9 @@ public class PlayController : MonoBehaviour {
 		scoreTxt.text = score.ToString();
 	}
 
+	/// <summary>
+	/// Increase miss score
+	/// </summary>
 	public void increaseMiss() {
 		this.miss++;
 		if (combo >= maxCombo) {
