@@ -15,6 +15,7 @@ public class PlayController : MonoBehaviour {
 	public Image darkImg;
 	public GameObject positionImg;
 	public Text scoreTxt;
+	public Text fps;
 
 	int perfect = 0;
 	int good = 0;
@@ -60,6 +61,20 @@ public class PlayController : MonoBehaviour {
 		LoadNotemap ();
 
 		StartCoroutine(LoadSongCoroutine ());
+
+		InitFPSDisplay ();
+	}
+
+	/// <summary>
+	/// Display FPS in the corner
+	/// </summary>
+	void InitFPSDisplay()
+	{
+		if (PlayerPrefs.GetInt ("Show FPS", 0) == 1) {
+			fps.gameObject.SetActive (true);
+		} else {
+			fps.gameObject.SetActive (false);
+		}
 	}
 	
 	// Update is called once per frame

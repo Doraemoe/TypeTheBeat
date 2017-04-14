@@ -29,6 +29,7 @@ public class EditorController : MonoBehaviour {
 	public InputField nameInput;
 	public InputField artistInput;
 	public GameObject indicatorPrefab;
+	public Text fps;
 
 	Vector3 startPosition;
 	float originalPositionX;
@@ -54,6 +55,20 @@ public class EditorController : MonoBehaviour {
 		indicator = (GameObject)Instantiate (indicatorPrefab);
 		indicator.transform.position = Vector3.zero;
 		indicator.transform.localScale = Vector3.one * 3;
+
+		InitFPSDisplay ();
+	}
+
+	/// <summary>
+	/// Display FPS in the corner
+	/// </summary>
+	void InitFPSDisplay()
+	{
+		if (PlayerPrefs.GetInt ("Show FPS", 0) == 1) {
+			fps.gameObject.SetActive (true);
+		} else {
+			fps.gameObject.SetActive (false);
+		}
 	}
 
 	void SetSelectedLocalPosition() {
