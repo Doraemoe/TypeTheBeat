@@ -19,6 +19,8 @@ public class MenuController : MonoBehaviour {
 
 	void Start () {
 		InitFPSDisplay ();
+
+		CDebug.Log (Application.dataPath);
 			
 	}
 

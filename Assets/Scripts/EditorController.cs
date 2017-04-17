@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Globalization;
 using System.Xml;
+using System.Diagnostics;
 
 using UnityEngine;
 using UnityEngine.UI;
@@ -255,7 +256,7 @@ public class EditorController : MonoBehaviour {
 	/// </summary>
 	public void OpenFile () {
 		var extensions = new [] {
-			new ExtensionFilter("Music Files", "ogg"),
+			new ExtensionFilter("Music Files", "ogg", "mp3", "m4a"),
 		};
 
 		var path = StandaloneFileBrowser.OpenFilePanel(
@@ -265,11 +266,45 @@ public class EditorController : MonoBehaviour {
 			false);
 
 		if (path[0].Length != 0) {
-			songLocation = new System.Uri(path[0]).AbsolutePath; 
-			songLocation = WWW.UnEscapeURL (songLocation);
-			StartCoroutine (LoadSongCoroutine (path[0]));
+			StartCoroutine (ConvertToOGG (path[0]));
 		}
 	}
+
+	/// <summary>
+	/// Convert music file to ogg format
+	/// </summary>
+	IEnumerator ConvertToOGG(string path) {
+		StartIndicator ();
+
+		songLocation = new System.Uri(path).AbsolutePath; 
+		songLocation = WWW.UnEscapeURL (songLocation);
+
+		string ext = Path.GetExtension (path);
+
+		if (ext.Equals (".ogg", System.StringComparison.OrdinalIgnoreCase)) {
+			StartCoroutine (LoadSongCoroutine(path));
+			//return path;
+		} else {
+
+			string source = "\"" + songLocation + "\"";
+			string destination = "\"" + Path.GetDirectoryName(songLocation) + "/song.ogg\"";
+			Process ffmpegProcess = FP.FFmpegProcess.ConvertToOGG (source, destination);
+
+
+			ffmpegProcess.Start();
+
+			while(!ffmpegProcess.HasExited) {
+				yield return null;
+			}
+
+			StartCoroutine (LoadSongCoroutine (Path.GetDirectoryName(path) + "/song.ogg"));
+		}
+
+
+
+		//return path;
+	}
+
 
 	/// <summary>
 	/// Load music file
@@ -277,7 +312,7 @@ public class EditorController : MonoBehaviour {
 	/// <param name="path">path to the music file.</param>
 	IEnumerator LoadSongCoroutine(string path)
 	{
-		StartIndicator ();
+		
 
 		var audioLocation = new WWW (path);
 
@@ -285,9 +320,16 @@ public class EditorController : MonoBehaviour {
 
 		audioSource.clip = audioLocation.GetAudioClip (false, false);
 
-		GenerateSoundWave ();
+		if (audioSource.clip == null) {
+			//error
+		} else {
+			GenerateSoundWave ();
+		}
+
 
 		StopIndicator ();
+
+
 	}
 
 	/// <summary>
