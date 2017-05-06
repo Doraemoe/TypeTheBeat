@@ -45,6 +45,8 @@ public class EditorController : MonoBehaviour {
 	string songLocation;
 	Dictionary<float, List<string>> notesData;
 	GameObject indicator;
+	bool songLoaded = false;
+	string savedPath = null;
 
 
 	// Use this for initialization
@@ -283,7 +285,6 @@ public class EditorController : MonoBehaviour {
 
 		if (ext.Equals (".ogg", System.StringComparison.OrdinalIgnoreCase)) {
 			StartCoroutine (LoadSongCoroutine(path));
-			//return path;
 		} else {
 
 			string source = "\"" + songLocation + "\"";
@@ -300,9 +301,6 @@ public class EditorController : MonoBehaviour {
 			StartCoroutine (LoadSongCoroutine (Path.GetDirectoryName(path) + "/song.ogg"));
 		}
 
-
-
-		//return path;
 	}
 
 
@@ -312,7 +310,7 @@ public class EditorController : MonoBehaviour {
 	/// <param name="path">path to the music file.</param>
 	IEnumerator LoadSongCoroutine(string path)
 	{
-		
+		CDebug.Log (path);
 
 		var audioLocation = new WWW (path);
 
@@ -320,12 +318,16 @@ public class EditorController : MonoBehaviour {
 
 		audioSource.clip = audioLocation.GetAudioClip (false, false);
 
-		if (audioSource.clip == null) {
+		if (audioSource.clip == null || audioSource.clip.length == 0f) {
+			//CDebug.Log ("no such song");
+			instantiateWaveController.SetActive (false);
+			songLoaded = true;
 			//error
 		} else {
 			GenerateSoundWave ();
 		}
 
+		songLoaded = true;
 
 		StopIndicator ();
 
@@ -416,7 +418,7 @@ public class EditorController : MonoBehaviour {
 	void PlayMusic() {
 
 		float current = audioSource.timeSamples / resolution;
-		instantiateWaveController.transform.position = Vector3.left * current * 0.1f + Vector3.up * 1.2f;
+		instantiateWaveController.transform.position = Vector3.left * current * Constants.kWaveWeightUnit + Vector3.up * 1.2f;
 		var currentPositionX = Camera.main.WorldToScreenPoint(instantiateWaveController.transform.position).x;
 		var pixOffset =  waveControllerX - currentPositionX;
 		if (pixOffset > 10) {
@@ -438,7 +440,7 @@ public class EditorController : MonoBehaviour {
 			var currentPostionX = instantiateWaveController.transform.position.x;
 			float offset = originalPositionX - currentPostionX;
 			if (offset > 0) {
-				var current = offset / 0.1f;
+				var current = offset / Constants.kWaveWeightUnit;
 				//current /= audioSource.clip.channels;
 				audioSource.timeSamples = (int)current * resolution;
 				playPauseTxt.text = "Pause";
@@ -575,54 +577,67 @@ public class EditorController : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// Load saved note data
+	/// Load existing project
 	/// </summary>
-	public void LoadNotes() {
-
-		var extensions = new [] {
-			new ExtensionFilter("Notemap File", "notemap"),
-		};
-
-		var path = StandaloneFileBrowser.OpenFilePanel(
-			"Open Notemap",
+	public void LoadProject() {
+		
+		var path = StandaloneFileBrowser.OpenFolderPanel(
+			"Open Existing Project", 
 			System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop),
-			extensions,
 			false);
 
-		if (path[0].Length != 0) {
-			
+		if (path [0].Length != 0) {
+			songLoaded = false;
+
 			path[0] = new System.Uri(path[0]).AbsolutePath; 
 			path[0] = WWW.UnEscapeURL (path[0]);
 
-			if (instantiateWaveController.activeSelf) {
-				string tmp;
-				//float position;
 
-				//clear old notes
-				var notes = GameObject.FindGameObjectsWithTag ("Note");
-				foreach (GameObject note in notes) {
-					Destroy (note);
-				}
+			StartCoroutine (ConvertToOGG ("file:///" + path[0] + "song.ogg"));
+			StartCoroutine (LoadNotes(path[0] + "song.notemap"));
+
+		}
+	}
+
+	/// <summary>
+	/// Load saved note data
+	/// </summary>
+	IEnumerator LoadNotes (string path)
+	{
+
+		while (!songLoaded) {
+			yield return null;
+		}
+
+		if (instantiateWaveController.activeSelf) {
+			string tmp;
+			//float position;
+
+			//clear old notes
+			var notes = GameObject.FindGameObjectsWithTag ("Note");
+			foreach (GameObject note in notes) {
+				Destroy (note);
+			}
 
 
 
-				var reader = new StreamReader (path[0]);
+			var reader = new StreamReader (path);
 
-				using (reader) {
-					do {
-						tmp = reader.ReadLine();
-						if(tmp != null) {
-							//According to the document, if the separator parameter is null or contains no characters, white-space characters are assumed to be the delimiters.
-							string[] names = tmp.Trim().Split(null);
-							float position = float.Parse(reader.ReadLine(), CultureInfo.InvariantCulture.NumberFormat);
-							foreach(string name in names) {
-								instantiateWaveController.GetComponent<InstantiateWaveform> ().DrawNoteWithPosition(name, position);
-							}
+			using (reader) {
+				do {
+					tmp = reader.ReadLine ();
+					if (tmp != null) {
+						//According to the document, if the separator parameter is null or contains no characters, white-space characters are assumed to be the delimiters.
+						string[] names = tmp.Trim ().Split (null);
+						float position = float.Parse (reader.ReadLine (), CultureInfo.InvariantCulture.NumberFormat);
+						foreach (string name in names) {
+							instantiateWaveController.GetComponent<InstantiateWaveform> ().DrawNoteWithPosition (name, position);
 						}
-					} while (tmp != null);
-					reader.Close ();
-				}
+					}
+				} while (tmp != null);
+				reader.Close ();
 			}
 		}
+		
 	}
 }

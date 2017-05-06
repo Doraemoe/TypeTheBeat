@@ -154,7 +154,7 @@ public class PlayController : MonoBehaviour {
 
 		float current = (float)delta / resolution;
 		var pos = this.transform.position;
-		pos.x = positionImg.transform.position.x - current * 0.1f * speedMulti;
+		pos.x = positionImg.transform.position.x - current * Constants.kWaveWeightUnit * speedMulti;
 		this.transform.position = pos;
 	}
 
