@@ -268,6 +268,7 @@ public class EditorController : MonoBehaviour {
 			false);
 
 		if (path[0].Length != 0) {
+            CDebug.Log(path[0]);
 			StartCoroutine (ConvertToOGG (path[0]));
 		}
 	}
@@ -295,6 +296,7 @@ public class EditorController : MonoBehaviour {
 			ffmpegProcess.Start();
 
 			while(!ffmpegProcess.HasExited) {
+                //CDebug.Log("still going");
 				yield return null;
 			}
 
@@ -310,24 +312,29 @@ public class EditorController : MonoBehaviour {
 	/// <param name="path">path to the music file.</param>
 	IEnumerator LoadSongCoroutine(string path)
 	{
-		CDebug.Log (path);
+        //CDebug.Log (path);
 
-		var audioLocation = new WWW (path);
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+        var audioLocation = new WWW ("file:///" + path);
+#elif UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
+        var audioLocation = new WWW (path);
+#endif
 
-		yield return audioLocation;
+        yield return audioLocation;
 
 		audioSource.clip = audioLocation.GetAudioClip (false, false);
 
 		if (audioSource.clip == null || audioSource.clip.length == 0f) {
-			//CDebug.Log ("no such song");
+			CDebug.Log ("no such song");
 			instantiateWaveController.SetActive (false);
 			songLoaded = true;
 			//error
 		} else {
 			GenerateSoundWave ();
-		}
+            songLoaded = true;
+        }
 
-		songLoaded = true;
+		
 
 		StopIndicator ();
 
@@ -431,6 +438,12 @@ public class EditorController : MonoBehaviour {
 	/// Play/Pause music file
 	/// </summary>
 	public void PlayPause() {
+        if (audioSource.clip == null || audioSource.clip.length == 0f)
+        {
+            //CDebug.Log("no music");
+            return;
+        }
+
 		if (audioSource.isPlaying == true) {
 			playPauseTxt.text = "Play";
 			audioSource.Pause ();
@@ -500,9 +513,14 @@ public class EditorController : MonoBehaviour {
 
 			CollectNotesData();
 
-			var sr = File.CreateText(path[0] + "song.notemap");
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+            var sr = File.CreateText(path[0] + "\\song.notemap");
+#elif UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
+            var sr = File.CreateText(path[0] + "song.notemap");
+#endif
 
-			foreach(KeyValuePair<float, List<string>> data in notesData)
+
+            foreach (KeyValuePair<float, List<string>> data in notesData)
 			{
 				//sr.WriteLine (data.Value.Count);
 
@@ -523,11 +541,19 @@ public class EditorController : MonoBehaviour {
 			*/
 			sr.Close();
 
-			WriteMetaXML (path[0] + "meta.xml");
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+            WriteMetaXML(path[0] + "\\meta.xml");
+#elif UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
+            WriteMetaXML(path[0] + "meta.xml");
+#endif
 
-			File.Copy (songLocation, path [0] + "song.ogg", true);
-		}
-	}
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+            File.Copy(songLocation, path[0] + "\\song.ogg", true);
+#elif UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
+            File.Copy (songLocation, path [0] + "song.ogg", true);
+#endif
+        }
+    }
 
 	/// <summary>
 	/// Collected all notes appeared in the scene
@@ -593,11 +619,16 @@ public class EditorController : MonoBehaviour {
 			path[0] = WWW.UnEscapeURL (path[0]);
 
 
-			StartCoroutine (ConvertToOGG ("file:///" + path[0] + "song.ogg"));
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+            StartCoroutine(ConvertToOGG(path[0] + "\\song.ogg"));
+            StartCoroutine(LoadNotes(path[0] + "\\song.notemap"));
+#elif UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
+            StartCoroutine(ConvertToOGG ("file:///" + path[0] + "song.ogg"));
 			StartCoroutine (LoadNotes(path[0] + "song.notemap"));
+#endif
 
-		}
-	}
+        }
+    }
 
 	/// <summary>
 	/// Load saved note data

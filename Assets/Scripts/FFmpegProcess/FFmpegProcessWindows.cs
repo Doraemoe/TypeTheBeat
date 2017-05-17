@@ -18,8 +18,8 @@ namespace FP
 			ffmpegProcess.StartInfo.Arguments = "-i " + source + " -vn -c:a libvorbis -q:a 5 " + destination + " -y";
 			ffmpegProcess.StartInfo.CreateNoWindow = true;
 			ffmpegProcess.StartInfo.UseShellExecute = false;
-			ffmpegProcess.StartInfo.RedirectStandardOutput = true;
-			ffmpegProcess.StartInfo.RedirectStandardError = true;
+			//ffmpegProcess.StartInfo.RedirectStandardOutput = true;
+			//ffmpegProcess.StartInfo.RedirectStandardError = true;
 
 			return ffmpegProcess;
 		}

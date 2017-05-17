@@ -14,13 +14,11 @@ namespace SFB {
 
         private static IStandaloneFileBrowser GetPlatformWrapper() {
             if (_platformWrapper == null) {
-    #if UNITY_STANDALONE_OSX
+#if UNITY_STANDALONE_OSX || UNITY_EDITOR_OSX
                 _platformWrapper = new StandaloneFileBrowserMac();
-    #elif UNITY_STANDALONE_WIN
+#elif UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
                 _platformWrapper = new StandaloneFileBrowserWindows();
-    #elif UNITY_EDITOR
-                _platformWrapper = new StandaloneFileBrowserEditor();
-    #endif
+#endif
             }
 
             return _platformWrapper;
