@@ -77,6 +77,16 @@ public class PlayController : MonoBehaviour {
 		}
 	}
 	
+
+	/// <summary>
+	/// This function is called every fixed framerate frame, if the MonoBehaviour is enabled.
+	/// </summary>
+	void FixedUpdate()
+	{
+		if (audioSource.isPlaying) {
+			RenderNotes();
+		}
+	}
 	// Update is called once per frame
 	void Update () {
 		if (Input.GetKeyDown (KeyCode.Escape)) {
@@ -88,7 +98,7 @@ public class PlayController : MonoBehaviour {
 		}
 
 		if (audioSource.isPlaying) {
-			RenderNotes();
+			//RenderNotes();
 		} else {
 			if (!paused && played) {
 				if (combo >= maxCombo) {

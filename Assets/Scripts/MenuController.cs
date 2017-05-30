@@ -5,40 +5,58 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class MenuController : MonoBehaviour {
+public class MenuController : MonoBehaviour
+{
 
-	public Text fps;
+    public Text fps;
 
-	public void LoadScene(string sceneName) {
-		SceneManager.LoadScene (sceneName);
-	}
+    /// <summary>
+    /// Awake is called when the script instance is being loaded.
+    /// </summary>
+    void Awake()
+    {
+        QualitySettings.vSyncCount = 0;
+        Application.targetFrameRate = 120;
+    }
 
-	public void quit() {
-		Application.Quit();
-	}
+    public void LoadScene(string sceneName)
+    {
+        SceneManager.LoadScene(sceneName);
+    }
 
-	void Start () {
-		InitFPSDisplay ();
+    public void quit()
+    {
+        Application.Quit();
+    }
 
-		CDebug.Log (Application.dataPath);
-			
-	}
+    void Start()
+    {
+        InitFPSDisplay();
 
-	/// <summary>
-	/// Display FPS in the corner
-	/// </summary>
-	void InitFPSDisplay()
-	{
-		if (PlayerPrefs.GetInt ("Show FPS", 0) == 1) {
-			fps.gameObject.SetActive (true);
-		} else {
-			fps.gameObject.SetActive (false);
-		}
-	}
+        CDebug.Log(Application.dataPath);
 
-	void Update() {
-		if (Input.GetKeyDown (KeyCode.Escape)) {
-			Application.Quit ();
-		}
-	}
+    }
+
+    /// <summary>
+    /// Display FPS in the corner
+    /// </summary>
+    void InitFPSDisplay()
+    {
+        if (PlayerPrefs.GetInt("Show FPS", 0) == 1)
+        {
+            fps.gameObject.SetActive(true);
+        }
+        else
+        {
+            fps.gameObject.SetActive(false);
+        }
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
+    }
 }
